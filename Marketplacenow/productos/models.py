@@ -1,3 +1,5 @@
+from django.db import models
+
 class Producto(models.Model):
     ID_PRODUCTO = models.AutoField(primary_key=True)
     ID_CATEGORIA = models.IntegerField()
