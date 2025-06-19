@@ -7,16 +7,16 @@
 
         <!-- Imagen desde carpeta static -->
         <div class="w-full h-72 bg-gray-100">
-          <img src="{% static producto.imagen %}" alt="{{ producto.nombre }}" class="w-full h-full object-cover" />
+          <img src="{% static producto.IMAGEN %}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-full object-cover" />
         </div>
 
         <!-- Detalles -->
         <div class="p-6 flex flex-col justify-between h-48">
-          <h3 class="text-xl font-bold text-gray-900 mb-2">{{ producto.nombre }}</h3>
-          <p class="text-base text-gray-600 flex-1">{{ producto.descripcion }}</p>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">{{ producto.NOMBRE_PRODUCTO }}</h3>
+          <p class="text-base text-gray-600 flex-1">{{ producto.DESCRIPCION }}</p>
           
           <div class="flex items-center justify-between mt-4">
-            <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
+            <p class="text-red-700 font-bold text-2xl">${{ producto.PRECIO }}</p>
             <button class="bg-red-600 text-white px-4 py-2 rounded-full text-base hover:bg-red-700 transition">
               <i class="fas fa-shopping-cart"></i>
             </button>
@@ -24,6 +24,8 @@
         </div>
 
       </div>
+    {% empty %}
+      <p class="text-center col-span-full text-gray-500">No hay productos disponibles.</p>
     {% endfor %}
   </div>
 </section>
