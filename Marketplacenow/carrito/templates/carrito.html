@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-gray-800 text-left mb-6">Carrito de Compras (2)</h2>
+
+  <!-- Lista de productos -->
+  <div class="space-y-4">
+    <!-- Producto 1 -->
+    <div class="flex items-center justify-between border rounded-lg p-4 hover:shadow">
+      <div class="flex items-center space-x-4">
+        <img src="{%static 'images\producto10.jpg'%}" alt="Aceite coco pelo" class="w-16 h-16 object-cover rounded" />
+        <div>
+          <p class="text-sm text-gray-500">SlowSunday Store</p>
+          <h3 class="text-base font-semibold text-gray-800">Aceite coco pelo</h3>
+          <p class="text-sm text-gray-600">Coconut / Unitalla</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-base font-bold text-red-600">$14.527</p>
+        <p class="text-xs text-gray-400 line-through">$17.099</p>
+        <p class="text-xs text-green-600 font-semibold">-15%</p>
+      </div>
+    </div>
+
+    <!-- Producto 2 -->
+    <div class="flex items-center justify-between border rounded-lg p-4 hover:shadow">
+      <div class="flex items-center space-x-4">
+        <img src="{%static 'images\producto2.jpg'%}" alt="Mascarilla capilar" class="w-16 h-16 object-cover rounded" />
+        <div>
+          <p class="text-sm text-gray-500">SlowSunday Store</p>
+          <h3 class="text-base font-semibold text-gray-800">Mascarilla para el Pelo</h3>
+          <p class="text-sm text-gray-600">Blanco / 100G</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-base font-bold text-red-600">$8.528</p>
+        <p class="text-xs text-gray-400 line-through">$11.099</p>
+        <p class="text-xs text-green-600 font-semibold">-23%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div class="flex justify-between items-center mt-6 border-t pt-4">
+    <p class="text-lg font-semibold text-gray-800">Total estimado:</p>
+    <p class="text-xl font-bold text-orange-600">$23.055</p>
+  </div>
+
+  <!-- Botón de pago -->
+  <div class="mt-6">
+    <a href="pago.html" class="block w-full bg-red-800 text-white text-center py-3 rounded-lg text-lg font-semibold hover:bg-red-950 transition">
+      Pagar ahora (2)
+    </a>
+    <p class="mt-2 text-center text-xs text-orange-600 font-semibold">¡Ahorro de $5.142 aplicado!</p>
+  </div>
+</div>
+
+
+{%endblock content%}

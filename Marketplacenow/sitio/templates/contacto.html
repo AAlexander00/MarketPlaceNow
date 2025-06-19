@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md mt-10">
+  <h2 class="text-3xl font-semibold text-gray-800 mb-6">Contáctanos</h2>
+  <form action="#" method="POST" class="space-y-6">
+    <div>
+      <label for="name" class="block text-gray-700 font-medium mb-2">Nombre</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        placeholder="Tu nombre"
+      />
+    </div>
+    <div>
+      <label for="email" class="block text-gray-700 font-medium mb-2">Correo electrónico</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        placeholder="tu@email.com"
+      />
+    </div>
+    <div>
+      <label for="subject" class="block text-gray-700 font-medium mb-2">Asunto</label>
+      <input
+        type="text"
+        id="subject"
+        name="subject"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        placeholder="Asunto del mensaje"
+      />
+    </div>
+    <div>
+      <label for="message" class="block text-gray-700 font-medium mb-2">Mensaje</label>
+      <textarea
+        id="message"
+        name="message"
+        rows="5"
+        required
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
+        placeholder="Escribe tu mensaje aquí..."
+      ></textarea>
+    </div>
+    <button
+      type="submit"
+      class="w-full bg-red-600 text-white font-semibold py-3 rounded-md hover:bg-red-700 transition-colors"
+    >
+      Enviar
+    </button>
+  </form>
+</div>
+
+{% endblock content %}

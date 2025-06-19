@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultados de Búsqueda</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Título de búsqueda -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+      Resultados de búsqueda para: 
+      <span class="text-red-600">"mascarilla"</span>
+    </h2>
+
+    <!-- Filtros -->
+    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <input type="text" placeholder="Filtrar por categoría o tienda" class="border border-gray-300 rounded px-3 py-2 text-sm w-full md:w-1/3 focus:outline-none focus:ring focus:ring-red-200" />
+     <a href="{%url 'inicio'%}" class="inline-block bg-red-600 text-white px-6 py-3 rounded-lg shadow hover:bg-red-700 transition">
+      Volver al Inicio
+    </a>
+    </div>
+
+    <!-- Resultados -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Producto 1 -->
+      <div class="border rounded-lg p-4 hover:shadow hover:border-red-400 transition">
+        <img src="{%static 'images/producto1.jpg'%}" alt="Aceite Coco Pelo" class="w-full h-48 object-cover rounded mb-3" />
+        <h3 class="text-sm font-semibold text-gray-800">Aceite Coco Pelo</h3>
+        <p class="text-xs text-gray-500 mb-1">SlowSunday Store</p>
+        <p class="text-red-600 font-bold text-sm">$14.527 <span class="text-gray-400 line-through text-xs ml-2">$17.099</span></p>
+      </div>
+
+      <!-- Producto 2 -->
+      <div class="border rounded-lg p-4 hover:shadow hover:border-red-400 transition">
+        <img src="{%static 'images/producto3.jpg'%}" alt="Mascarilla Capilar" class="w-full h-48 object-cover rounded mb-3" />
+
+        <h3 class="text-sm font-semibold text-gray-800">Mascarilla Capilar</h3>
+        <p class="text-xs text-gray-500 mb-1">SlowSunday Store</p>
+        <p class="text-red-600 font-bold text-sm">$8.528 <span class="text-gray-400 line-through text-xs ml-2">$11.099</span></p>
+      </div>
+
+      <!-- Puedes duplicar este bloque para más productos -->
+    </div>
+
+    <!-- Mensaje si no hay resultados -->
+    <!--
+    <p class="text-center text-gray-500 mt-12">No se encontraron resultados para tu búsqueda.</p>
+    -->
+  </div>
+
+</body>
+</html>

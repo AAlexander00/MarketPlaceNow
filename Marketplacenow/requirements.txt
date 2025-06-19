@@ -1,0 +1,7 @@
+asgiref==3.8.1
+Django==5.2.3
+django-tailwind==4.0.1
+PyMySQL==1.1.1
+sqlparse==0.5.3
+tzdata==2025.2
+Pillow==10.3.0
