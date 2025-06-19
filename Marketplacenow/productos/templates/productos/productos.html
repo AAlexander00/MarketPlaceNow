@@ -7,8 +7,9 @@
 
         <!-- Imagen desde carpeta static -->
         <div class="w-full h-72 bg-gray-100">
-          <img src="{% static producto.IMAGEN %}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-full object-cover" />
+          <img src="{% static 'images/' %}{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-full object-cover" />
         </div>
+
 
         <!-- Detalles -->
         <div class="p-6 flex flex-col justify-between h-48">
