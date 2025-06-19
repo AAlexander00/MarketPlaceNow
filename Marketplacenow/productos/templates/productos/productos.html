@@ -5,12 +5,12 @@
     {% for producto in productos %}
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
 
-        <!-- Imagen más grande -->
+        <!-- Imagen desde carpeta static -->
         <div class="w-full h-72 bg-gray-100">
-          <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover" />
+          <img src="{% static producto.imagen %}" alt="{{ producto.nombre }}" class="w-full h-full object-cover" />
         </div>
 
-        <!-- Detalles más espaciosos -->
+        <!-- Detalles -->
         <div class="p-6 flex flex-col justify-between h-48">
           <h3 class="text-xl font-bold text-gray-900 mb-2">{{ producto.nombre }}</h3>
           <p class="text-base text-gray-600 flex-1">{{ producto.descripcion }}</p>
@@ -27,7 +27,3 @@
     {% endfor %}
   </div>
 </section>
-
-
-
-
