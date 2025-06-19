@@ -135,9 +135,6 @@ USE_TZ = True
 
 # Archivos estáticos (CSS, JS, imágenes generales)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 # Archivos multimedia (imágenes subidas, productos, perfiles, etc.)
 MEDIA_URL = '/media/'
