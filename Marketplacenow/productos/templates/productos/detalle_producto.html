@@ -1,27 +1,52 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>{{ producto.NOMBRE_PRODUCTO }}</title>
+    <title>{{ producto.NOMBRE_PRODUCTO }} | MarketPlaceNow</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-    <body class="bg-gray-100 p-8">
+<body class="bg-gray-50">
 
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="md:flex">
-            <div class="md:flex-shrink-0">
-                <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="h-80 w-full object-cover md:w-96" />
-            </div>
-            <div class="p-8">
-                <h1 class="text-3xl font-bold text-gray-900">{{ producto.NOMBRE_PRODUCTO }}</h1>
-                <p class="mt-4 text-gray-600">{{ producto.DESCRIPCION }}</p>
-                <p class="mt-4 text-red-700 text-2xl font-semibold">$ {{ producto.PRECIO }}</p>
-                <button class="mt-6 bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">
-                    Agregar al carrito
-                </button>
-            </div>
-            </div>
-        </div>
-    </body>
+<!-- HEADER -->
+<header class="bg-indigo-800 text-white px-6 py-4 flex justify-between items-center">
+    <a href="{% url 'inicio' %}" class="text-2xl font-bold">MARKETPLACENOW</a>
+    <div class="space-x-4 text-xl">
+        <i class="fas fa-search hover:text-red-400 cursor-pointer"></i>
+        <i class="fas fa-user hover:text-red-400 cursor-pointer"></i>
+        <i class="fas fa-bag-shopping relative hover:text-red-400 cursor-pointer">
+            <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">0</span>
+        </i>
+        <i class="fas fa-heart relative hover:text-red-400 cursor-pointer">
+            <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">0</span>
+        </i>
+    </div>
+</header>
+
+<!-- CONTENIDO DEL PRODUCTO -->
+<section class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <!-- Imagen grande -->
+    <div>
+        <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-auto rounded-lg shadow" />
+    </div>
+
+    <!-- Información del producto -->
+    <div class="flex flex-col justify-between space-y-4">
+        <h2 class="text-3xl font-bold text-gray-900">{{ producto.NOMBRE_PRODUCTO }}</h2>
+        <p class="text-gray-700 text-base">{{ producto.DESCRIPCION }}</p>
+        <p class="text-sm text-gray-500">Garantía: {{ producto.DIAS_GARANTIA }} días</p>
+        <p class="text-sm text-gray-500">Publicado el: {{ producto.FECHA_PUBLICACION }}</p>
+        <p class="text-4xl font-bold text-red-700">${{ producto.PRECIO }}</p>
+
+        <!-- Botón -->
+        <button class="bg-red-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-red-700 transition">
+        Agregar al carrito
+        </button>
+    </div>
+</section>
+
+</body>
 </html>
