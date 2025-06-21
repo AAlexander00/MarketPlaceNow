@@ -12,4 +12,11 @@ def lista_productos(request):
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, ID_PRODUCTO=producto_id)
-    return render(request, 'productos/detalle_producto.html', {'producto': producto})
+
+    # Suponiendo que hay un campo ID_CATEGORIA
+    relacionados = Producto.objects.filter(ID_CATEGORIA=producto.ID_CATEGORIA).exclude(ID_PRODUCTO=producto_id)[:4]
+
+    return render(request, 'productos/detalle_producto.html', {
+        'producto': producto,
+        'relacionados': relacionados,
+    })

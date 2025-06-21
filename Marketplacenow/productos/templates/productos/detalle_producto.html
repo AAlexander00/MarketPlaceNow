@@ -27,4 +27,24 @@
         </form>
     </div>
 </section>
+
+<!-- PRODUCTOS RELACIONADOS -->
+<section class="max-w-7xl mx-auto mt-16 px-4">
+    <h3 class="text-2xl font-bold text-gray-800 mb-6">Productos relacionados</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for rel in relacionados %}
+            <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
+                <a href="{% url 'detalle_producto' rel.ID_PRODUCTO %}">
+                    <img src="/media/{{ rel.IMAGEN }}" alt="{{ rel.NOMBRE_PRODUCTO }}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="text-lg font-semibold text-gray-800">{{ rel.NOMBRE_PRODUCTO }}</h4>
+                        <p class="text-red-600 font-bold mt-2">${{ rel.PRECIO }}</p>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 col-span-full">No hay productos relacionados.</p>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}
