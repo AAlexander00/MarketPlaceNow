@@ -149,3 +149,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+# Configuración de envío de correos para recuperar contraseña
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra el contenido del correo en la consola
+
+DEFAULT_FROM_EMAIL = 'MarketPlaceNow <noreply@marketplacenow.com>'
