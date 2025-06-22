@@ -22,6 +22,9 @@
         Correo electrónico
       </label>
       {% render_field form.email class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" %}
+      {% if form.email.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
+      {% endif %}
     </div>
 
     <button
@@ -31,6 +34,8 @@
       Recuperar Contraseña
     </button>
   </form>
+  {% else %}
+    <p class="text-center text-gray-600">Este formulario no está disponible en este momento.</p>
   {% endif %}
 
   <div class="text-center mt-4">
