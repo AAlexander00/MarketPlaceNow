@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'sitio',
     'tailwind',
     'theme',
+    'widget_tweaks',
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -150,7 +151,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
-# Configuración de envío de correos para recuperar contraseña
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra el contenido del correo en la consola
-
-DEFAULT_FROM_EMAIL = 'MarketPlaceNow <noreply@marketplacenow.com>'
+# Configuración de envío de correos reales (usando Gmail por ejemplo)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'MarketPlaceNow2025@gmail.com'  # reemplaza con tu correo
+EMAIL_HOST_PASSWORD = 'wxry wign lnsp mscg'  # contraseña o clave de aplicación
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
