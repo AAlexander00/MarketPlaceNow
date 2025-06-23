@@ -17,10 +17,18 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('recuperar/', auth_views.PasswordResetView.as_view(template_name="usuarios/olvide_contrasena.html"), name="password_reset"),
-    path('recuperar/enviado/', auth_views.PasswordResetDoneView.as_view(template_name="registration/password_reset_done.html"), name="password_reset_done"),
-    path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="registration/password_reset_confirm.html"), name="password_reset_confirm"),
-    path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name="registration/password_reset_complete.html"), name="password_reset_complete"),
+    path('recuperar/enviado/', auth_views.PasswordResetDoneView.as_view(
+        template_name="usuarios/password_reset_done.html"
+    ), name="password_reset_done"),
+
+    path('recuperar/enviado/', auth_views.PasswordResetDoneView.as_view(
+        template_name="registration/password_reset_done.html"), name="password_reset_done"),
+
+    path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name="registration/password_reset_confirm.html"), name="password_reset_confirm"),
+
+    path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(
+        template_name="registration/password_reset_complete.html"), name="password_reset_complete"),
 ]
 
 # Archivos estáticos y multimedia
