@@ -1,11 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Usuario
-from django.utils import timezone
-import datetime
-import random
-
-def olvide_contrasena(request):
-    return render(request, 'olvide_contrasena.html')
+from django.contrib.auth.models import User
+from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
@@ -13,23 +10,18 @@ def register(request):
         contrasena = request.POST['contrasena']
         nombres = request.POST['nombres']
 
-        # Validación simple
-        if Usuario.objects.filter(correoe=correo).exists():
+        if User.objects.filter(email=correo).exists():
             return render(request, 'register.html', {'error': 'El correo ya está registrado.'})
 
-        usuario = Usuario(
-            id_carrito=1,
-            nombres_usuario=nombres,
-            correoe=correo,
-            contrasena=contrasena,
-            direccion='',
-            telefono=0,
-            fecharegistro=timezone.now().date(),
-            token='',
-            token_expira=datetime.datetime.now() + datetime.timedelta(days=1)
+        user = User.objects.create_user(
+            username=correo,
+            email=correo,
+            password=contrasena,
+            first_name=nombres
         )
-        usuario.save()
-        return redirect('login')  # nombre de la URL del login
+        user.save()
+        messages.success(request, 'Cuenta creada correctamente.')
+        return redirect('login')
 
     return render(request, 'register.html')
 
@@ -37,21 +29,18 @@ def login(request):
     if request.method == 'POST':
         correo = request.POST['correo']
         contrasena = request.POST['contrasena']
+        user = authenticate(request, username=correo, password=contrasena)
 
-        try:
-            usuario = Usuario.objects.get(correoe=correo, contrasena=contrasena)
-            request.session['usuario_id'] = usuario.id_usuario
-            request.session['usuario_nombre'] = usuario.nombres_usuario
-            return redirect('perfil')  # redirige a perfil.html
-        except Usuario.DoesNotExist:
+        if user is not None:
+            auth_login(request, user)
+            return redirect('perfil')
+        else:
             return render(request, 'login.html', {'error': 'Correo o contraseña incorrectos'})
 
     return render(request, 'login.html')
 
+@login_required
 def perfil(request):
-    if 'usuario_id' not in request.session:
-        return redirect('login')
-
     return render(request, 'perfil.html', {
-        'nombre': request.session['usuario_nombre']
+        'nombre': request.user.first_name
     })

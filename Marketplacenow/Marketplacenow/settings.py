@@ -160,3 +160,7 @@ EMAIL_USE_SSL = False  # MUY IMPORTANTE: debe estar en False si estás usando TL
 EMAIL_HOST_USER = 'marketplacenow2025@gmail.com'
 EMAIL_HOST_PASSWORD = 'wxrywignlnspmscg'  # tu contraseña de aplicación (sin espacios)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'perfil'
+LOGOUT_REDIRECT_URL = 'login'
