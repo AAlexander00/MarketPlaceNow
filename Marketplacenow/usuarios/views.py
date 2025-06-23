@@ -27,9 +27,9 @@ def register(request):
 
 def login(request):
     if request.method == 'POST':
-        correo = request.POST['correo']
-        contrasena = request.POST['contrasena']
-        user = authenticate(request, username=correo, password=contrasena)
+        username = request.POST.get('username')  # <- CAMBIADO
+        password = request.POST.get('password')  # <- CAMBIADO
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             auth_login(request, user)

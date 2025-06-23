@@ -10,7 +10,7 @@ urlpatterns = [
 
     # Recuperación de contraseña
     path('olvide_contrasena/', auth_views.PasswordResetView.as_view(
-        template_name='usuarios/olvide_contrasena.html'), name='olvide_contrasena'),
+        template_name='usuarios/olvide_contrasena.html'), name='password_reset'),
     path('recuperar/enviado/', auth_views.PasswordResetDoneView.as_view(
         template_name='usuarios/password_reset_done.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
