@@ -15,6 +15,7 @@ urlpatterns = [
     # Página principal muestra productos
     path('', views.lista_productos, name='inicio'),
     path('ordenes/', include('ordenes.urls')),
+    path('pagos/', include('pagos.urls')),
 ]
 
 urlpatterns += [

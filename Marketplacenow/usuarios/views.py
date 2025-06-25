@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from ordenes.models import Orden
 
 def register(request):
     if request.method == 'POST':
@@ -41,11 +42,13 @@ def login(request):
 
 from ordenes.models import Orden  # importa el modelo
 
+from ordenes.models import Orden
+
 @login_required
 def perfil(request):
-    nombre = request.user.first_name
-    pedidos = Orden.objects.filter(usuario=request.user).order_by('-fecha_creacion')
+    ordenes = Orden.objects.filter(usuario=request.user).order_by('-fecha_creacion')
+
     return render(request, 'perfil.html', {
-        'nombre': nombre,
-        'pedidos': pedidos
+        'nombre': request.user.first_name,
+        'ordenes': ordenes,
     })
