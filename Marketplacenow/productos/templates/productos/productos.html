@@ -5,14 +5,12 @@
     {% for producto in productos %}
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
 
-        <!-- Imagen enlazada a detalle del producto -->
         <a href="{% url 'detalle_producto' producto.ID_PRODUCTO %}">
           <div class="w-full h-72 bg-gray-100">
             <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-full object-cover" />
           </div>
         </a>
 
-        <!-- Detalles -->
         <div class="p-6 flex flex-col justify-between h-48">
           <h3 class="text-xl font-bold text-gray-900 mb-2">{{ producto.NOMBRE_PRODUCTO }}</h3>
           <p class="text-base text-gray-600 flex-1">{{ producto.DESCRIPCION }}</p>
@@ -20,17 +18,27 @@
           <div class="flex items-center justify-between mt-4">
             <p class="text-red-700 font-bold text-2xl">${{ producto.PRECIO }}</p>
 
-            <!-- BOTÓN FUNCIONAL PARA AGREGAR AL CARRITO -->
-            <form action="{% url 'agregar_al_carrito' producto.ID_PRODUCTO %}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-full text-base hover:bg-red-700 transition">
-                <i class="fas fa-shopping-cart"></i>
-              </button>
-            </form>
+            <div class="flex space-x-2">
+              <!-- Carrito -->
+              <form action="{% url 'agregar_al_carrito' producto.ID_PRODUCTO %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
+                  <i class="fas fa-shopping-cart"></i>
+                </button>
+              </form>
+
+              <!-- Comprar -->
+              <form action="{% url 'ordenar_producto' producto.ID_PRODUCTO %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="cantidad" value="1">
+                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-full hover:bg-red-700">
+                  <i class="fas fa-credit-card"></i>
+                </button>
+              </form>
+            </div>
 
           </div>
         </div>
-
       </div>
     {% empty %}
       <p class="text-center col-span-full text-gray-500">No hay productos disponibles.</p>
