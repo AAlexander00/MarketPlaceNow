@@ -14,27 +14,26 @@ def detalle_orden(request, orden_id):
 @login_required
 def pagar_orden(request, orden_id):
     orden = get_object_or_404(Orden, id=orden_id, usuario=request.user)
-    
+
     if request.method == 'POST':
-        orden.pagado = True
-        orden.fecha_pago = timezone.now()
+        orden.estado = 'pagado'
+        orden.fecha_creacion = timezone.now()  # o puedes agregar campo fecha_pago si lo deseas
         orden.save()
-        return redirect('perfil')  # Redirige a perfil u otra vista de confirmación
-    
+        messages.success(request, '¡Pago realizado con éxito!')
+        return redirect('detalle_orden', orden_id=orden.id)
+
     return redirect('detalle_orden', orden_id=orden.id)
 
 @login_required
 def ordenar_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
 
-    # Crear la orden
     orden = Orden.objects.create(
         usuario=request.user,
         total=producto.PRECIO,
-        estado='pagado'
+        estado='pendiente'  # Se marca como pagado al presionar el botón
     )
 
-    # Crear detalle de la orden
     DetalleOrden.objects.create(
         orden=orden,
         producto=producto,
@@ -42,5 +41,5 @@ def ordenar_producto(request, producto_id):
         precio_unitario=producto.PRECIO
     )
 
-    messages.success(request, 'Compra realizada con éxito.')
+    messages.success(request, 'Orden creada. Puedes proceder al pago.')
     return redirect('detalle_orden', orden.id)

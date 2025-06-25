@@ -39,8 +39,13 @@ def login(request):
 
     return render(request, 'login.html')
 
+from ordenes.models import Orden  # importa el modelo
+
 @login_required
 def perfil(request):
+    nombre = request.user.first_name
+    pedidos = Orden.objects.filter(usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'perfil.html', {
-        'nombre': request.user.first_name
+        'nombre': nombre,
+        'pedidos': pedidos
     })
