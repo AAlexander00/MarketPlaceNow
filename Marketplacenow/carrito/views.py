@@ -41,3 +41,33 @@ def eliminar_del_carrito(request, item_id):
     item = get_object_or_404(CarritoItem, id=item_id, usuario=request.user)
     item.delete()
     return redirect('ver_carrito')
+
+@login_required
+def pagar_carrito(request):
+    if request.method == 'POST':
+        carrito_items = CarritoItem.objects.filter(usuario=request.user)
+
+        if not carrito_items.exists():
+            return redirect('ver_carrito')
+
+        from ordenes.models import Orden, DetalleOrden
+
+        orden = Orden.objects.create(
+            usuario=request.user,
+            total=sum(item.subtotal() for item in carrito_items),
+            estado='pagado'
+        )
+
+        for item in carrito_items:
+            DetalleOrden.objects.create(
+                orden=orden,
+                producto=item.producto,
+                cantidad=item.cantidad,
+                precio_unitario=item.producto.PRECIO
+            )
+
+        carrito_items.delete()  # Vaciar el carrito tras la compra
+
+        return redirect('detalle_orden', orden.id)
+
+    return redirect('ver_carrito')

@@ -15,3 +15,7 @@ def pagar_orden(request, orden_id):
         return redirect('confirmacion_pago')  # Cambiado aquí
 
     return render(request, 'pagos/realizar_pago.html', {'orden': orden})
+
+@login_required
+def confirmacion_pago(request):
+    return render(request, 'pagos/confirmacion_pago.html')

@@ -31,12 +31,14 @@
       <p class="text-xl font-bold text-orange-600">${{ total|floatformat:"0" }}</p>
     </div>
 
-    <!-- Botón de pago -->
-    <div class="mt-6">
-      <a href="#" class="block w-full bg-red-800 text-white text-center py-3 rounded-lg text-lg font-semibold hover:bg-red-950 transition">
+    <!-- Botón de pago funcional -->
+    <form action="{% url 'pagar_carrito' %}" method="POST" class="mt-6">
+      {% csrf_token %}
+      <button type="submit" class="block w-full bg-red-800 text-white text-center py-3 rounded-lg text-lg font-semibold hover:bg-red-950 transition">
         Pagar ahora
-      </a>
-    </div>
+      </button>
+    </form>
+
   {% else %}
     <p class="text-center text-gray-500">Tu carrito está vacío.</p>
   {% endif %}
