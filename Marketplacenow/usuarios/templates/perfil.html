@@ -32,6 +32,13 @@
         <li><a href="#" class="hover:text-red-600">Registros de Servicio</a></li>
       </ul>
     </div>
+    <!-- Botón cerrar sesión -->
+    <form action="{% url 'logout' %}" method="post" class="pt-4">
+      {% csrf_token %}
+      <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition font-semibold text-sm">
+        Cerrar Sesión
+      </button>
+    </form>
   </aside>
 
   <!-- Panel Central -->

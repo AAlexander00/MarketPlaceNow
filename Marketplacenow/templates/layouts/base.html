@@ -53,25 +53,14 @@
       <div class="w-1/3 flex justify-end items-center space-x-6 text-xl {% if es_inicio %}text-white{% else %}text-gray-700{% endif %}">
         <a href="{% url 'busqueda' %}" class="hover:text-black transition"><i class="fas fa-search"></i></a>
 
+        <!-- Ícono de usuario con lógica condicional -->
         {% if user.is_authenticated %}
-          <!-- Dropdown Usuario -->
-          <div class="relative" id="user-dropdown">
-            <button onclick="toggleDropdown()" class="hover:text-black transition focus:outline-none">
-              <i class="fas fa-user"></i>
-            </button>
-            <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-800 border rounded shadow-md text-sm z-50">
-              <a href="{% url 'perfil' %}" class="block px-4 py-2 hover:bg-gray-100">Mi perfil</a>
-              <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
-              </form>
-            </div>
-          </div>
+          <a href="{% url 'perfil' %}" class="hover:text-black transition"><i class="fas fa-user"></i></a>
         {% else %}
           <a href="{% url 'login' %}" class="hover:text-black transition"><i class="fas fa-user"></i></a>
         {% endif %}
 
-        <!-- Carrito con contador -->
+        <!-- Carrito -->
         <a href="{% url 'ver_carrito' %}" class="relative hover:text-black transition">
           <i class="fas fa-shopping-cart"></i>
           <span id="carrito-count" class="absolute -top-2 -right-3 bg-red-700 text-white text-xs rounded-full px-1">
@@ -79,7 +68,7 @@
           </span>
         </a>
 
-        <!-- Favoritos (placeholder) -->
+        <!-- Favoritos -->
         <a href="{% url 'favoritos' %}" class="relative hover:text-black transition">
           <i class="fas fa-heart"></i>
           <span class="absolute -top-2 -right-3 bg-red-700 text-white text-xs rounded-full px-1">0</span>
@@ -140,24 +129,6 @@
     </div>
     <div class="text-center mt-8 text-gray-500">&copy; 2025 MARKETPLACENOW</div>
   </footer>
-
-  <!-- Dropdown JS -->
-  <script>
-    function toggleDropdown() {
-      const menu = document.getElementById("dropdown-menu");
-      menu.classList.toggle("hidden");
-    }
-
-    // Cierra el menú si se hace clic fuera del dropdown
-    window.addEventListener("click", function(e) {
-      const menu = document.getElementById("dropdown-menu");
-      const button = document.querySelector("#user-dropdown button");
-
-      if (menu && !menu.contains(e.target) && !button.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-    });
-  </script>
 
   <script src="{% static 'js/inicio.js' %}"></script>
 </body>
