@@ -5,6 +5,7 @@
     {% for producto in productos %}
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
 
+        <!-- Imagen del producto -->
         <a href="{% url 'detalle_producto' producto.ID_PRODUCTO %}">
           <div class="w-full h-72 bg-gray-100">
             <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-full object-cover" />
@@ -19,22 +20,15 @@
             <p class="text-red-700 font-bold text-2xl">${{ producto.PRECIO }}</p>
 
             <div class="flex space-x-2">
-              <!-- Carrito -->
-              <form action="{% url 'agregar_al_carrito' producto.ID_PRODUCTO %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
-                  <i class="fas fa-shopping-cart"></i>
-                </button>
-              </form>
+              <!-- Botón para agregar al carrito con AJAX -->
+              <button onclick="agregarAlCarrito('{{ producto.ID_PRODUCTO }}')" class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
+                <i class="fas fa-shopping-cart"></i>
+              </button>
 
-              <!-- Comprar -->
-              <form action="{% url 'ordenar_producto' producto.ID_PRODUCTO %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="cantidad" value="1">
-                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-full hover:bg-red-700">
-                  <i class="fas fa-credit-card"></i>
-                </button>
-              </form>
+              <!-- Ícono de favoritos -->
+              <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
+                <i class="fas fa-heart"></i>
+              </button>
             </div>
 
           </div>
@@ -45,3 +39,45 @@
     {% endfor %}
   </div>
 </section>
+
+<script>
+  function agregarAlCarrito(productoId) {
+    fetch(`/carrito/agregar/${productoId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        const contador = document.getElementById("carrito-count");
+        if (contador) {
+          contador.textContent = data.total_items;
+
+          // 👇 Animación al actualizar el contador
+          contador.classList.add("contador-animado");
+          setTimeout(() => {
+            contador.classList.remove("contador-animado");
+          }, 300);
+        }
+      }
+    });
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
