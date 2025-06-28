@@ -5,20 +5,24 @@
 <section class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md grid grid-cols-1 md:grid-cols-2 gap-8">
     <!-- Imagen -->
     <div>
-        <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-auto rounded-lg shadow" />
+        {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-auto rounded-lg shadow" />
+        {% else %}
+            <img src="{% static 'images/no-image.png' %}" alt="Sin imagen" class="w-full h-auto rounded-lg shadow" />
+        {% endif %}
     </div>
 
     <!-- Info -->
     <div class="flex flex-col justify-between space-y-4">
-        <h2 class="text-3xl font-bold text-gray-900">{{ producto.NOMBRE_PRODUCTO }}</h2>
-        <p class="text-gray-700">{{ producto.DESCRIPCION }}</p>
-        <p class="text-sm text-gray-500">Garantía: {{ producto.DIAS_GARANTIA }} días</p>
-        <p class="text-sm text-gray-500">Publicado el: {{ producto.FECHA_PUBLICACION }}</p>
-        <p class="text-4xl font-bold text-red-700">${{ producto.PRECIO }}</p>
+        <h2 class="text-3xl font-bold text-gray-900">{{ producto.nombre }}</h2>
+        <p class="text-gray-700">{{ producto.descripcion }}</p>
+        <p class="text-sm text-gray-500">Garantía: {{ producto.dias_garantia }} días</p>
+        <p class="text-sm text-gray-500">Publicado el: {{ producto.fecha_publicacion }}</p>
+        <p class="text-4xl font-bold text-red-700">${{ producto.precio }}</p>
 
         <div class="flex space-x-4">
             <!-- Agregar al carrito -->
-            <form action="{% url 'agregar_al_carrito' producto.ID_PRODUCTO %}" method="POST">
+            <form action="{% url 'agregar_al_carrito' producto.id %}" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">
                     Agregar al carrito
@@ -26,7 +30,7 @@
             </form>
 
             <!-- Botón Comprar -->
-            <form action="{% url 'ordenar_producto' producto.ID_PRODUCTO %}" method="POST">
+            <form action="{% url 'ordenar_producto' producto.id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="cantidad" value="1">
                 <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
@@ -42,15 +46,21 @@
     <h3 class="text-2xl font-bold text-gray-800 mb-6">Productos relacionados</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for rel in relacionados %}
+            {% if rel.id %}
             <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
-                <a href="{% url 'detalle_producto' rel.ID_PRODUCTO %}">
-                    <img src="/media/{{ rel.IMAGEN }}" alt="{{ rel.NOMBRE_PRODUCTO }}" class="w-full h-48 object-cover">
+                <a href="{% url 'detalle_producto' rel.id %}">
+                    {% if rel.imagen %}
+                        <img src="{{ rel.imagen.url }}" alt="{{ rel.nombre }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <img src="{% static 'images/no-image.png' %}" alt="Sin imagen" class="w-full h-48 object-cover">
+                    {% endif %}
                     <div class="p-4">
-                        <h4 class="text-lg font-semibold text-gray-800">{{ rel.NOMBRE_PRODUCTO }}</h4>
-                        <p class="text-red-600 font-bold mt-2">${{ rel.PRECIO }}</p>
+                        <h4 class="text-lg font-semibold text-gray-800">{{ rel.nombre }}</h4>
+                        <p class="text-red-600 font-bold mt-2">${{ rel.precio }}</p>
                     </div>
                 </a>
             </div>
+            {% endif %}
         {% empty %}
             <p class="text-gray-500 col-span-full">No hay productos relacionados.</p>
         {% endfor %}

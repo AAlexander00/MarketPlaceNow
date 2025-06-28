@@ -2,9 +2,22 @@ from django.shortcuts import render
 from productos.models import Producto
 from django.shortcuts import render, get_object_or_404
 from .models import Producto
+from django.db.models import Q
 
 def busqueda(request):
-    return render(request, 'busqueda.html')
+    query = request.GET.get('q', '')
+    resultados = []
+
+    if query:
+        resultados = Producto.objects.filter(
+            Q(NOMBRE_PRODUCTO__icontains=query) | 
+            Q(DESCRIPCION__icontains=query)
+        )
+
+    return render(request, 'productos/busqueda.html', {
+        'query': query,
+        'resultados': resultados
+    })
 
 def lista_productos(request):
     productos = Producto.objects.all()

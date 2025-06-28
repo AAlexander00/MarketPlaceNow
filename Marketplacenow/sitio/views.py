@@ -3,15 +3,16 @@ from productos.models import Producto
 from carrito.models import CarritoItem
 
 def inicio(request):
-    productos = Producto.objects.all()
-    total_items_carrito = 0
+    # 🔄 Ya no forzamos id='', solo excluimos null
+    productos = Producto.objects.exclude(id__isnull=True)
 
+    total_items_carrito = 0
     if request.user.is_authenticated:
         total_items_carrito = contar_items_carrito(request.user)
 
     return render(request, 'sitio/inicio.html', {
         'es_inicio': True,
-        'productos': productos,  # <- necesario para mostrar productos
+        'productos': productos,
         'total_items_carrito': total_items_carrito
     })
 
