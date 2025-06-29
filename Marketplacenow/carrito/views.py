@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import CarritoItem
-from productos.models import Producto
+from productos.models import Producto, Talla, Color
 from ordenes.models import Orden, DetalleOrden
 
 
@@ -26,25 +26,47 @@ def ver_carrito(request):
         'total_items_carrito': total_items_carrito
     })
 
+
 @login_required
 def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, ID_PRODUCTO=producto_id)
-    item, created = CarritoItem.objects.get_or_create(usuario=request.user, producto=producto)
-    if not created:
-        item.cantidad += 1
-    item.save()
+    producto = get_object_or_404(Producto, id=producto_id)
 
-    total_items = CarritoItem.objects.filter(usuario=request.user).count()
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
+        talla_id = request.POST.get('talla')
+        color_id = request.POST.get('color')
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'ok': True, 'total_items': total_items})
+        talla = Talla.objects.get(id=talla_id) if talla_id else None
+        color = Color.objects.get(id=color_id) if color_id else None
 
-    return redirect('ver_carrito')
+        # Verificar si ya hay un ítem similar en el carrito
+        item, created = CarritoItem.objects.get_or_create(
+            usuario=request.user,
+            producto=producto,
+            talla=talla,
+            color=color,
+            defaults={'cantidad': 0}
+        )
 
-@login_required
-def eliminar_del_carrito(request, item_id):
-    item = get_object_or_404(CarritoItem, id=item_id, usuario=request.user)
-    item.delete()
+        cantidad_total = item.cantidad + cantidad if not created else cantidad
+
+        # Verificación de stock
+        if cantidad_total > producto.stock:
+            return render(request, 'detalle_producto.html', {
+                'producto': producto,
+                'tallas': producto.tallas.all(),
+                'colores': producto.colores.all(),
+                'error': f"Solo hay {producto.stock} unidades disponibles en stock.",
+            })
+
+        # Agregar al carrito
+        item.cantidad = cantidad_total
+        item.save()
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            total_items = CarritoItem.objects.filter(usuario=request.user).count()
+            return JsonResponse({'ok': True, 'total_items': total_items})
+
     return redirect('ver_carrito')
 
 
@@ -79,7 +101,7 @@ def procesar_pago(request):
                 orden=orden,
                 producto=item.producto,
                 cantidad=item.cantidad,
-                precio_unitario=item.producto.PRECIO
+                precio_unitario=item.producto.precio
             )
 
         carrito_items.delete()

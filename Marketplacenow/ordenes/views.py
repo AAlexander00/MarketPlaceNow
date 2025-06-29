@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from ordenes.models import Orden
-from productos.models import Producto
+from django.shortcuts import render, redirect, get_object_or_404, redirect
+from ordenes.models import Orden, DetalleOrden
+from productos.models import Producto, Talla, Color
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Orden, DetalleOrden
@@ -26,20 +26,32 @@ def pagar_orden(request, orden_id):
 
 @login_required
 def ordenar_producto(request, producto_id):
-    producto = get_object_or_404(Producto, pk=producto_id)
+    producto = get_object_or_404(Producto, id=producto_id)
 
-    orden = Orden.objects.create(
-        usuario=request.user,
-        total=producto.PRECIO,
-        estado='pendiente'  # Se marca como pagado al presionar el botón
-    )
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
+        talla_id = request.POST.get('talla')
+        color_id = request.POST.get('color')
 
-    DetalleOrden.objects.create(
-        orden=orden,
-        producto=producto,
-        cantidad=1,
-        precio_unitario=producto.PRECIO
-    )
+        talla = Talla.objects.get(id=talla_id) if talla_id else None
+        color = Color.objects.get(id=color_id) if color_id else None
 
-    messages.success(request, 'Orden creada. Puedes proceder al pago.')
-    return redirect('detalle_orden', orden.id)
+        orden = Orden.objects.create(
+            usuario=request.user,
+            total=producto.precio * cantidad,
+            estado='pendiente'
+        )
+
+        DetalleOrden.objects.create(
+            orden=orden,
+            producto=producto,
+            cantidad=cantidad,
+            talla=talla,
+            color=color,
+            precio_unitario=producto.precio
+        )
+
+        messages.success(request, 'Orden creada correctamente.')
+        return redirect('detalle_orden', orden.id)
+
+    return redirect('detalle_producto', producto_id=producto.id)

@@ -20,6 +20,13 @@
         <p class="text-sm text-gray-500">Publicado el: {{ producto.fecha_publicacion }}</p>
         <p class="text-4xl font-bold text-red-700">${{ producto.precio }}</p>
 
+        <!-- ⚠️ Mostrar mensaje de error -->
+        {% if error %}
+            <p class="text-red-600 font-semibold bg-red-100 border border-red-300 px-4 py-2 rounded">
+                {{ error }}
+            </p>
+        {% endif %}
+
         <!-- Selección de Talla -->
         {% if tallas %}
         <div>
