@@ -13,7 +13,7 @@ class Categoria(models.Model):
         return self.NOMBRE_CATEGORIA
 
 
-# Talla del producto (ahora es M2M)
+# Talla del producto
 class Talla(models.Model):
     ID_TALLA = models.AutoField(primary_key=True)
     VALOR_TALLA = models.CharField(max_length=10)
@@ -25,7 +25,7 @@ class Talla(models.Model):
         return self.VALOR_TALLA
 
 
-# Marca del producto
+# Marca
 class Marca(models.Model):
     nombre = models.CharField(max_length=50)
 
@@ -36,7 +36,7 @@ class Marca(models.Model):
         return self.nombre
 
 
-# Color del producto
+# Color
 class Color(models.Model):
     nombre = models.CharField(max_length=50)
 
@@ -47,7 +47,7 @@ class Color(models.Model):
         return self.nombre
 
 
-# Producto principal
+# Producto
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
