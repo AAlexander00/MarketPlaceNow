@@ -26,12 +26,13 @@
             <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
 
             <div class="flex space-x-2">
-              <!-- Botón para agregar al carrito con AJAX -->
-              <button onclick="agregarAlCarrito('{{ producto.id }}')" class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
+              <!-- Botón para agregar al carrito -->
+              <button onclick="manejarAgregarProducto({{ producto.id }}&#44; {{ producto.tallas.all|length }}&#44; {{ producto.colores.all|length }})"
+                      class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
                 <i class="fas fa-shopping-cart"></i>
               </button>
 
-              <!-- Ícono de favoritos -->
+              <!-- Favoritos -->
               <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
                 <i class="fas fa-heart"></i>
               </button>
@@ -46,8 +47,17 @@
   </div>
 </section>
 
+<!-- Script para AJAX o modal -->
 <script>
-  function agregarAlCarrito(productoId) {
+  function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
+    if (tieneTallas > 0 || tieneColores > 0) {
+      abrirModal(productoId);
+    } else {
+      agregarAlCarritoDirecto(productoId);
+    }
+  }
+
+  function agregarAlCarritoDirecto(productoId) {
     fetch(`/carrito/agregar/${productoId}/`, {
       method: 'POST',
       headers: {
@@ -62,12 +72,41 @@
         if (contador) {
           contador.textContent = data.total_items;
           contador.classList.add("contador-animado");
-          setTimeout(() => {
-            contador.classList.remove("contador-animado");
-          }, 300);
+          setTimeout(() => contador.classList.remove("contador-animado"), 300);
         }
       }
     });
+  }
+
+  function abrirModal(productoId) {
+    fetch(`/productos/api/${productoId}/`)  // Asegúrate que esta URL existe y devuelve JSON con tallas y colores
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("modal-producto-id").value = productoId;
+
+        // Limpiar selects
+        const tallaSelect = document.getElementById("modal-talla");
+        tallaSelect.innerHTML = "";
+        if (data.tallas.length > 0) {
+          tallaSelect.innerHTML = data.tallas.map(t => `<option value="${t.id}">${t.valor}</option>`).join("");
+          tallaSelect.parentElement.style.display = "block";
+        } else {
+          tallaSelect.parentElement.style.display = "none";
+        }
+
+        const colorSelect = document.getElementById("modal-color");
+        colorSelect.innerHTML = "";
+        if (data.colores.length > 0) {
+          colorSelect.innerHTML = data.colores.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
+          colorSelect.parentElement.style.display = "block";
+        } else {
+          colorSelect.parentElement.style.display = "none";
+        }
+
+        document.getElementById("modal-cantidad").value = 1;
+
+        document.getElementById("modal-agregar-carrito").classList.remove("hidden");
+      });
   }
 
   function getCookie(name) {
