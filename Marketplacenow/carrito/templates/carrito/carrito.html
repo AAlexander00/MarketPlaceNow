@@ -10,13 +10,30 @@
       {% for item in carrito_items %}
         <div class="flex items-center justify-between border rounded-lg p-4 hover:shadow">
           <div class="flex items-center space-x-4">
-            <img src="/media/{{ item.producto.IMAGEN }}" alt="{{ item.producto.NOMBRE_PRODUCTO }}" class="w-16 h-16 object-cover rounded" />
+            <!-- Imagen -->
+            <div class="w-20 h-20">
+              {% if item.producto.imagen %}
+                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="w-full h-full object-cover rounded" />
+              {% else %}
+                <img src="{% static 'images/no-image.png' %}" alt="Sin imagen" class="w-full h-full object-cover rounded" />
+              {% endif %}
+            </div>
+
+            <!-- Info del producto -->
             <div>
+              <h3 class="text-base font-semibold text-gray-800">{{ item.producto.nombre }}</h3>
+              <p class="text-sm text-gray-600">{{ item.producto.descripcion|truncatewords:8 }}</p>
               <p class="text-sm text-gray-500">Cantidad: {{ item.cantidad }}</p>
-              <h3 class="text-base font-semibold text-gray-800">{{ item.producto.NOMBRE_PRODUCTO }}</h3>
-              <p class="text-sm text-gray-600">{{ item.producto.DESCRIPCION|truncatewords:8 }}</p>
+              {% if item.talla %}
+                <p class="text-sm text-gray-500">Talla: {{ item.talla.valor_talla }}</p>
+              {% endif %}
+              {% if item.color %}
+                <p class="text-sm text-gray-500">Color: {{ item.color.nombre }}</p>
+              {% endif %}
             </div>
           </div>
+
+          <!-- Subtotal y eliminar -->
           <div class="text-right">
             <p class="text-base font-bold text-red-600">${{ item.subtotal|floatformat:"0" }}</p>
             <a href="{% url 'eliminar_del_carrito' item.id %}" class="text-red-600 hover:underline text-sm">Eliminar</a>
@@ -31,7 +48,7 @@
       <p class="text-xl font-bold text-orange-600">${{ total|floatformat:"0" }}</p>
     </div>
 
-<!-- Botón de pago funcional -->
+    <!-- Botón de pago -->
     <form action="{% url 'seleccionar_pago' %}" method="GET" class="mt-6">
       <button type="submit" class="block w-full bg-red-800 text-white text-center py-3 rounded-lg text-lg font-semibold hover:bg-red-950 transition">
         Pagar ahora

@@ -75,39 +75,45 @@
 <script>
   function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
     if (tieneTallas > 0 || tieneColores > 0) {
-      mostrarModal(productoId, tieneTallas, tieneColores);
+      window.location.href = `/productos/detalle/${productoId}/`;
     } else {
-      agregarAlCarritoDirecto(productoId);
-    }
-  }
-
-  function agregarAlCarritoDirecto(productoId) {
-    fetch(`/carrito/agregar/${productoId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.ok) {
-        const contador = document.getElementById("carrito-count");
-        if (contador) {
-          contador.textContent = data.total_items;
-          contador.classList.add("contador-animado");
-          setTimeout(() => contador.classList.remove("contador-animado"), 300);
+      fetch(`/carrito/agregar/${productoId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+      })
+      .then(response => {
+        if (!response.ok) return response.json().then(data => { throw data });
+        return response.json();
+      })
+      .then(data => {
+        if (data.ok) {
+          const contador = document.getElementById("carrito-count");
+          if (contador) {
+            contador.textContent = data.total_items;
+            contador.classList.add("contador-animado");
+            setTimeout(() => contador.classList.remove("contador-animado"), 300);
+          }
         }
-      }
-    });
+      })
+      .catch(err => {
+        if (err && err.error) {
+          mostrarMensajeError(err.error);
+        } else {
+          mostrarMensajeError("Ocurrió un error inesperado.");
+        }
+      });
+    }
   }
 
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
       const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
         if (cookie.substring(0, name.length + 1) === (name + '=')) {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
@@ -116,6 +122,28 @@
     }
     return cookieValue;
   }
+
+  // ✅ Mostrar mensaje de error arriba
+  function mostrarMensajeError(texto) {
+    const errorBox = document.createElement("div");
+    errorBox.textContent = texto;
+    errorBox.className = "fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded shadow-lg z-50 animate-fade";
+    document.body.appendChild(errorBox);
+
+    setTimeout(() => {
+      errorBox.remove();
+    }, 3000);
+  }
 </script>
+
+<style>
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade {
+    animation: fade 0.3s ease-out;
+  }
+</style>
 
 {% endblock content %}

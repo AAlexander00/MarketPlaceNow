@@ -29,45 +29,85 @@ def ver_carrito(request):
 
 @login_required
 def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id)
+    try:
+        producto = get_object_or_404(Producto, id=producto_id)
 
-    if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad', 1))
-        talla_id = request.POST.get('talla')
-        color_id = request.POST.get('color')
-
-        talla = Talla.objects.get(id=talla_id) if talla_id else None
-        color = Color.objects.get(id=color_id) if color_id else None
-
-        # Verificar si ya hay un ítem similar en el carrito
-        item, created = CarritoItem.objects.get_or_create(
-            usuario=request.user,
-            producto=producto,
-            talla=talla,
-            color=color,
-            defaults={'cantidad': 0}
-        )
-
-        cantidad_total = item.cantidad + cantidad if not created else cantidad
-
-        # Verificación de stock
-        if cantidad_total > producto.stock:
+        if producto.stock == 0:
+            mensaje = "Este producto está agotado."
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': False, 'error': mensaje}, status=400)
             return render(request, 'detalle_producto.html', {
                 'producto': producto,
                 'tallas': producto.tallas.all(),
                 'colores': producto.colores.all(),
-                'error': f"Solo hay {producto.stock} unidades disponibles en stock.",
+                'error': mensaje,
             })
 
-        # Agregar al carrito
-        item.cantidad = cantidad_total
-        item.save()
+        if request.method == 'POST':
+            cantidad = int(request.POST.get('cantidad', 1))
+            talla_id = request.POST.get('talla')
+            color_id = request.POST.get('color')
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            total_items = CarritoItem.objects.filter(usuario=request.user).count()
-            return JsonResponse({'ok': True, 'total_items': total_items})
+            if cantidad <= 0:
+                mensaje = "Debes seleccionar al menos una unidad."
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'ok': False, 'error': mensaje}, status=400)
+                return render(request, 'detalle_producto.html', {
+                    'producto': producto,
+                    'tallas': producto.tallas.all(),
+                    'colores': producto.colores.all(),
+                    'error': mensaje,
+                })
 
-    return redirect('ver_carrito')
+            talla = None
+            if talla_id:
+                try:
+                    talla = Talla.objects.get(id=talla_id)
+                except (Talla.DoesNotExist, ValueError) as e:
+                    print("❌ Error con talla:", e)
+
+            color = None
+            if color_id:
+                try:
+                    color = Color.objects.get(id=color_id)
+                except (Color.DoesNotExist, ValueError) as e:
+                    print("❌ Error con color:", e)
+
+            item, created = CarritoItem.objects.get_or_create(
+                usuario=request.user,
+                producto=producto,
+                talla=talla,
+                color=color,
+                defaults={'cantidad': 0}
+            )
+
+            cantidad_total = item.cantidad + cantidad if not created else cantidad
+
+            if cantidad_total > producto.stock:
+                mensaje = f"Solo hay {producto.stock} unidades disponibles."
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'ok': False, 'error': mensaje}, status=400)
+                return render(request, 'detalle_producto.html', {
+                    'producto': producto,
+                    'tallas': producto.tallas.all(),
+                    'colores': producto.colores.all(),
+                    'error': mensaje,
+                })
+
+            item.cantidad = cantidad_total
+            item.save()
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                total_items = CarritoItem.objects.filter(usuario=request.user).count()
+                return JsonResponse({'ok': True, 'total_items': total_items})
+
+        return redirect('ver_carrito')
+
+    except Exception as e:
+        import traceback
+        print("🧨 ERROR en agregar_al_carrito:")
+        traceback.print_exc()
+        return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
 
 @login_required

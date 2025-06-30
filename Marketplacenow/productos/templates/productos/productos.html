@@ -25,11 +25,12 @@
             <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
 
             <div class="flex space-x-2">
-              <!-- Botón para agregar al carrito -->
-              <button onclick="manejarAgregarProducto({{ producto.id }}&#44; {{ producto.tallas.all|length }}&#44; {{ producto.colores.all|length }})"
-                      class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
+              <!-- Nuevo botón de agregar -->
+              <a href="{{ producto_url }}"
+                  class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300"
+                  title="Ver detalles y agregar">
                 <i class="fas fa-shopping-cart"></i>
-              </button>
+              </a>
 
               <!-- Favoritos -->
               <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
@@ -45,50 +46,3 @@
     {% endfor %}
   </div>
 </section>
-
-<!-- Script para AJAX o modal -->
-<script>
-  function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
-    if (tieneTallas > 0 || tieneColores > 0) {
-      mostrarModal(productoId, tieneTallas, tieneColores);
-    } else {
-      agregarAlCarritoDirecto(productoId);
-    }
-  }
-
-  function agregarAlCarritoDirecto(productoId) {
-    fetch(`/carrito/agregar/${productoId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.ok) {
-        const contador = document.getElementById("carrito-count");
-        if (contador) {
-          contador.textContent = data.total_items;
-          contador.classList.add("contador-animado");
-          setTimeout(() => contador.classList.remove("contador-animado"), 300);
-        }
-      }
-    });
-  }
-
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-</script>

@@ -25,7 +25,7 @@ class Talla(models.Model):
         return self.VALOR_TALLA
 
 
-# Marca
+# Marca (✅ ahora puede ser ManyToMany si deseas múltiples marcas por producto)
 class Marca(models.Model):
     nombre = models.CharField(max_length=50)
 
@@ -54,9 +54,11 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
     tallas = models.ManyToManyField(Talla, blank=True)
     colores = models.ManyToManyField(Color, blank=True)
-    marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True, blank=True)
+    marcas = models.ManyToManyField(Marca, blank=True)  # ✅ Convertido a ManyToMany
+
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     publicado_por = models.ForeignKey(User, on_delete=models.CASCADE)
 
