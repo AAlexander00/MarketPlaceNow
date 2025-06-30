@@ -14,15 +14,13 @@
             <!-- Tallas -->
             <div id="grupo-talla" class="mb-4 hidden">
                 <label for="modal-talla" class="block font-semibold mb-1">Talla:</label>
-                <select name="talla" id="modal-talla" class="w-full border rounded px-3 py-2">
-                </select>
+                <select name="talla" id="modal-talla" class="w-full border rounded px-3 py-2"></select>
             </div>
 
             <!-- Colores -->
             <div id="grupo-color" class="mb-4 hidden">
                 <label for="modal-color" class="block font-semibold mb-1">Color:</label>
-                <select name="color" id="modal-color" class="w-full border rounded px-3 py-2">
-                </select>
+                <select name="color" id="modal-color" class="w-full border rounded px-3 py-2"></select>
             </div>
 
             <!-- Cantidad -->
@@ -41,54 +39,50 @@
 <script>
     const modal = document.getElementById('modal-carrito');
     const cerrarBtn = document.getElementById('cerrar-modal');
-
     cerrarBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
-    function mostrarModal(productoId, tieneTallas, tieneColores) {
+    function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
         document.getElementById('modal-producto-id').value = productoId;
+        const grupoTalla = document.getElementById('grupo-talla');
+        const grupoColor = document.getElementById('grupo-color');
+        grupoTalla.classList.toggle('hidden', !tieneTallas);
+        grupoColor.classList.toggle('hidden', !tieneColores);
 
-    // Mostrar u ocultar selects según corresponda
-    const grupoTalla = document.getElementById('grupo-talla');
-    const grupoColor = document.getElementById('grupo-color');
-    grupoTalla.classList.toggle('hidden', !tieneTallas);
-    grupoColor.classList.toggle('hidden', !tieneColores);
+        if (tieneTallas) {
+            fetch(`/productos/${productoId}/tallas/`)
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('modal-talla');
+                    select.innerHTML = '';
+                    data.tallas.forEach(t => {
+                        const option = document.createElement('option');
+                        option.value = t.id;
+                        option.textContent = t.valor;
+                        select.appendChild(option);
+                    });
+                });
+        }
 
-    // Obtener tallas y colores si aplica
-    if (tieneTallas) {
-        fetch(`/productos/${productoId}/tallas/`)
-            .then(res => res.json())
-            .then(data => {
-                const select = document.getElementById('modal-talla');
-                select.innerHTML = '';
-                data.tallas.forEach(t => {
-                    const option = document.createElement('option');
-                    option.value = t.id;
-                    option.textContent = t.valor;
-                    select.appendChild(option);
-            });
-        });
-    }
-    if (tieneColores) {
-        fetch(`/productos/${productoId}/colores/`)
-            .then(res => res.json())
-            .then(data => {
-                const select = document.getElementById('modal-color');
-                select.innerHTML = '';
-                data.colores.forEach(c => {
-                    const option = document.createElement('option');
-                    option.value = c.id;
-                    option.textContent = c.nombre;
-                    select.appendChild(option);
-            });
-        });
-    }
+        if (tieneColores) {
+            fetch(`/productos/${productoId}/colores/`)
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('modal-color');
+                    select.innerHTML = '';
+                    data.colores.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = c.nombre;
+                        select.appendChild(option);
+                    });
+                });
+        }
 
         modal.classList.remove('hidden');
     }
 
     document.getElementById('form-modal-carrito').addEventListener('submit', function(e) {
         e.preventDefault();
-
         const formData = new FormData(this);
         const productoId = formData.get('producto_id');
 

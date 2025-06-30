@@ -6,7 +6,6 @@
       {% url 'detalle_producto' producto.id as producto_url %}
       {% if producto.id and producto_url %}
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
-        
         <!-- Imagen del producto -->
         <a href="{{ producto_url }}">
           <div class="w-full h-72 bg-gray-100">
@@ -51,7 +50,7 @@
 <script>
   function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
     if (tieneTallas > 0 || tieneColores > 0) {
-      abrirModal(productoId);
+      mostrarModal(productoId, tieneTallas, tieneColores);
     } else {
       agregarAlCarritoDirecto(productoId);
     }
@@ -76,37 +75,6 @@
         }
       }
     });
-  }
-
-  function abrirModal(productoId) {
-    fetch(`/productos/api/${productoId}/`)  // Asegúrate que esta URL existe y devuelve JSON con tallas y colores
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("modal-producto-id").value = productoId;
-
-        // Limpiar selects
-        const tallaSelect = document.getElementById("modal-talla");
-        tallaSelect.innerHTML = "";
-        if (data.tallas.length > 0) {
-          tallaSelect.innerHTML = data.tallas.map(t => `<option value="${t.id}">${t.valor}</option>`).join("");
-          tallaSelect.parentElement.style.display = "block";
-        } else {
-          tallaSelect.parentElement.style.display = "none";
-        }
-
-        const colorSelect = document.getElementById("modal-color");
-        colorSelect.innerHTML = "";
-        if (data.colores.length > 0) {
-          colorSelect.innerHTML = data.colores.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
-          colorSelect.parentElement.style.display = "block";
-        } else {
-          colorSelect.parentElement.style.display = "none";
-        }
-
-        document.getElementById("modal-cantidad").value = 1;
-
-        document.getElementById("modal-agregar-carrito").classList.remove("hidden");
-      });
   }
 
   function getCookie(name) {

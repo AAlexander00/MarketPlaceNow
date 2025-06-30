@@ -3,7 +3,8 @@ from productos.models import Producto
 from carrito.models import CarritoItem
 
 def inicio(request):
-    # 🔄 Ya no forzamos id='', solo excluimos null
+    print("✅ Vista 'inicio' ejecutada correctamente")  # Confirmación en consola
+
     productos = Producto.objects.exclude(id__isnull=True)
 
     total_items_carrito = 0
@@ -11,7 +12,7 @@ def inicio(request):
         total_items_carrito = contar_items_carrito(request.user)
 
     return render(request, 'sitio/inicio.html', {
-        'es_inicio': True,
+        'es_inicio': True,  # ✅ Muy importante para el logo
         'productos': productos,
         'total_items_carrito': total_items_carrito
     })

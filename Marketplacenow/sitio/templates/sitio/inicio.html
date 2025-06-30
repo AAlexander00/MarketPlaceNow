@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Inicio{% endblock title %}
@@ -25,7 +25,97 @@
 
 <!-- Sección de productos -->
 <div class="mt-8">
-  {% include "productos/productos.html" %}
+  <section class="max-w-7xl mx-auto px-4 mt-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+      {% for producto in productos %}
+        {% url 'detalle_producto' producto.id as producto_url %}
+        {% if producto.id and producto_url %}
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
+          <!-- Imagen del producto -->
+          <a href="{{ producto_url }}">
+            <div class="w-full h-72 bg-gray-100">
+              {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover" />
+              {% else %}
+                <img src="{% static 'images/no-image.png' %}" alt="Sin imagen" class="w-full h-full object-cover" />
+              {% endif %}
+            </div>
+          </a>
+
+          <div class="p-6 flex flex-col justify-between h-48">
+            <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{{ producto.nombre|default:"Producto sin nombre" }}</h3>
+            <p class="text-base text-gray-600 flex-1 line-clamp-2">{{ producto.descripcion }}</p>
+
+            <div class="flex items-center justify-between mt-4">
+              <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
+
+              <div class="flex space-x-2">
+                <!-- Botón para agregar al carrito -->
+                <button onclick="manejarAgregarProducto({{ producto.id }}&#44; {{ producto.tallas.all|length }}&#44; {{ producto.colores.all|length }})"
+                        class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
+                  <i class="fas fa-shopping-cart"></i>
+                </button>
+
+                <!-- Favoritos -->
+                <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      {% empty %}
+        <p class="text-center col-span-full text-gray-500">No hay productos disponibles.</p>
+      {% endfor %}
+    </div>
+  </section>
 </div>
+
+<script>
+  function manejarAgregarProducto(productoId, tieneTallas, tieneColores) {
+    if (tieneTallas > 0 || tieneColores > 0) {
+      mostrarModal(productoId, tieneTallas, tieneColores);
+    } else {
+      agregarAlCarritoDirecto(productoId);
+    }
+  }
+
+  function agregarAlCarritoDirecto(productoId) {
+    fetch(`/carrito/agregar/${productoId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        const contador = document.getElementById("carrito-count");
+        if (contador) {
+          contador.textContent = data.total_items;
+          contador.classList.add("contador-animado");
+          setTimeout(() => contador.classList.remove("contador-animado"), 300);
+        }
+      }
+    });
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
 
 {% endblock content %}

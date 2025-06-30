@@ -66,8 +66,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                # ✅ Agregado:
+                # ✅ Estos son los que debes tener activos:
                 'carrito.context_processors.contador_carrito',
+                'sitio.context_processors.es_inicio_context',
             ],
         },
     },
@@ -100,6 +101,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

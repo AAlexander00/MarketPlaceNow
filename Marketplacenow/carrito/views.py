@@ -71,6 +71,13 @@ def agregar_al_carrito(request, producto_id):
 
 
 @login_required
+def eliminar_del_carrito(request, item_id):
+    item = get_object_or_404(CarritoItem, id=item_id, usuario=request.user)
+    item.delete()
+    return redirect('ver_carrito')
+
+
+@login_required
 def seleccionar_pago(request):
     carrito_items = CarritoItem.objects.filter(usuario=request.user)
     total = sum(item.subtotal() for item in carrito_items)
