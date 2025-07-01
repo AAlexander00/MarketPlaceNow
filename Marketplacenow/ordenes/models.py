@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from productos.models import Producto
+from productos.models import Producto, Talla, Color
 
 class Orden(models.Model):
     ESTADOS = [
@@ -29,6 +29,9 @@ class DetalleOrden(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    talla = models.ForeignKey(Talla, null=True, blank=True, on_delete=models.SET_NULL)
+    color = models.ForeignKey(Color, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'detalle_orden'

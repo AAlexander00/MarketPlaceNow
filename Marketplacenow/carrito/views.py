@@ -32,11 +32,12 @@ def agregar_al_carrito(request, producto_id):
     try:
         producto = get_object_or_404(Producto, id=producto_id)
 
+        # Validación de stock
         if producto.stock == 0:
             mensaje = "Este producto está agotado."
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'ok': False, 'error': mensaje}, status=400)
-            return render(request, 'detalle_producto.html', {
+            return render(request, 'productos/detalle_producto.html', {
                 'producto': producto,
                 'tallas': producto.tallas.all(),
                 'colores': producto.colores.all(),
@@ -48,31 +49,43 @@ def agregar_al_carrito(request, producto_id):
             talla_id = request.POST.get('talla')
             color_id = request.POST.get('color')
 
+            # Validar cantidad mínima
             if cantidad <= 0:
                 mensaje = "Debes seleccionar al menos una unidad."
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'ok': False, 'error': mensaje}, status=400)
-                return render(request, 'detalle_producto.html', {
+                return render(request, 'productos/detalle_producto.html', {
                     'producto': producto,
                     'tallas': producto.tallas.all(),
                     'colores': producto.colores.all(),
                     'error': mensaje,
                 })
 
+            # Obtener talla si se envió (ya no es obligatoria)
             talla = None
             if talla_id:
                 try:
                     talla = Talla.objects.get(id=talla_id)
-                except (Talla.DoesNotExist, ValueError) as e:
-                    print("❌ Error con talla:", e)
+                except:
+                    talla = None  # Ignora errores de talla inválida
 
+            # Validación de color si aplica
             color = None
-            if color_id:
-                try:
+            if producto.colores.exists():
+                if color_id and color_id.strip():
                     color = Color.objects.get(id=color_id)
-                except (Color.DoesNotExist, ValueError) as e:
-                    print("❌ Error con color:", e)
+                else:
+                    mensaje = "Debes seleccionar un color."
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({'ok': False, 'error': mensaje}, status=400)
+                    return render(request, 'productos/detalle_producto.html', {
+                        'producto': producto,
+                        'tallas': producto.tallas.all(),
+                        'colores': producto.colores.all(),
+                        'error': mensaje,
+                    })
 
+            # Buscar o crear ítem
             item, created = CarritoItem.objects.get_or_create(
                 usuario=request.user,
                 producto=producto,
@@ -83,17 +96,19 @@ def agregar_al_carrito(request, producto_id):
 
             cantidad_total = item.cantidad + cantidad if not created else cantidad
 
+            # Verificar stock disponible
             if cantidad_total > producto.stock:
                 mensaje = f"Solo hay {producto.stock} unidades disponibles."
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'ok': False, 'error': mensaje}, status=400)
-                return render(request, 'detalle_producto.html', {
+                return render(request, 'productos/detalle_producto.html', {
                     'producto': producto,
                     'tallas': producto.tallas.all(),
                     'colores': producto.colores.all(),
                     'error': mensaje,
                 })
 
+            # Guardar ítem
             item.cantidad = cantidad_total
             item.save()
 

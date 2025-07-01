@@ -28,30 +28,63 @@ def pagar_orden(request, orden_id):
 def ordenar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
 
+    if producto.stock == 0:
+        return render(request, 'detalle_producto.html', {
+            'producto': producto,
+            'tallas': producto.tallas.all(),
+            'colores': producto.colores.all(),
+            'error': "Este producto está agotado.",
+        })
+
     if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad', 1))
-        talla_id = request.POST.get('talla')
-        color_id = request.POST.get('color')
+        try:
+            cantidad = int(request.POST.get('cantidad', 1))
+            talla_id = request.POST.get('talla')
+            color_id = request.POST.get('color')
 
-        talla = Talla.objects.get(id=talla_id) if talla_id else None
-        color = Color.objects.get(id=color_id) if color_id else None
+            if cantidad <= 0:
+                raise ValueError("La cantidad debe ser mayor a 0.")
 
-        orden = Orden.objects.create(
-            usuario=request.user,
-            total=producto.precio * cantidad,
-            estado='pendiente'
-        )
+            talla = None
+            if talla_id:
+                talla = Talla.objects.get(id=talla_id)
 
-        DetalleOrden.objects.create(
-            orden=orden,
-            producto=producto,
-            cantidad=cantidad,
-            talla=talla,
-            color=color,
-            precio_unitario=producto.precio
-        )
+            color = None
+            if color_id:
+                color = Color.objects.get(id=color_id)
 
-        messages.success(request, 'Orden creada correctamente.')
-        return redirect('detalle_orden', orden.id)
+            if cantidad > producto.stock:
+                return render(request, 'detalle_producto.html', {
+                    'producto': producto,
+                    'tallas': producto.tallas.all(),
+                    'colores': producto.colores.all(),
+                    'error': f"Solo hay {producto.stock} unidades disponibles.",
+                })
+
+            orden = Orden.objects.create(
+                usuario=request.user,
+                total=producto.precio * cantidad,
+                estado='pendiente'
+            )
+
+            DetalleOrden.objects.create(
+                orden=orden,
+                producto=producto,
+                cantidad=cantidad,
+                talla=talla,
+                color=color,
+                precio_unitario=producto.precio
+            )
+
+            messages.success(request, 'Orden creada correctamente.')
+            return redirect('detalle_orden', orden.id)
+
+        except Exception as e:
+            return render(request, 'detalle_producto.html', {
+                'producto': producto,
+                'tallas': producto.tallas.all(),
+                'colores': producto.colores.all(),
+                'error': str(e),
+            })
 
     return redirect('detalle_producto', producto_id=producto.id)

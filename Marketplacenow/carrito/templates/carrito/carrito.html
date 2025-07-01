@@ -26,9 +26,7 @@
               <p class="text-sm text-gray-500">Cantidad: {{ item.cantidad }}</p>
 
               {% if item.talla %}
-                  <p class="text-sm text-gray-500">Talla seleccionada: <strong>{{ item.talla }}</strong></p>
-              {% else %}
-                  <p style="color:red;">⚠️ Este ítem no tiene talla asociada</p>
+                  <p class="text-sm text-gray-500">Talla seleccionada: <strong>{{ item.talla.VALOR_TALLA }}</strong></p>
               {% endif %}
 
               {% if item.color %}

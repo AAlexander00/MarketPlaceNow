@@ -15,12 +15,23 @@
 
     {% for item in orden.detalles.all %}
     <div class="flex items-start space-x-6 mb-6">
-        <img src="/media/{{ item.producto.IMAGEN }}" alt="{{ item.producto.NOMBRE_PRODUCTO }}" class="w-40 h-40 object-cover rounded shadow">
+        <img src="{{ item.producto.imagen.url if item.producto.imagen else '/static/images/no-image.png' }}" alt="{{ item.producto.nombre }}" class="w-40 h-40 object-cover rounded shadow">
         <div class="flex-1">
-            <h3 class="text-xl font-semibold text-gray-900">{{ item.producto.NOMBRE_PRODUCTO }}</h3>
-            <p class="text-gray-600 mt-2">{{ item.producto.DESCRIPCION }}</p>
+            <h3 class="text-xl font-semibold text-gray-900">{{ item.producto.nombre }}</h3>
+            <p class="text-gray-600 mt-2">{{ item.producto.descripcion }}</p>
+
             <p class="mt-2 text-sm text-gray-500">Cantidad: <strong>{{ item.cantidad }}</strong></p>
-            <p class="mt-1 text-sm text-gray-500">Garantía: {{ item.producto.DIAS_GARANTIA }} días</p>
+
+            {% if item.talla %}
+                <p class="mt-1 text-sm text-gray-500">Talla: <strong>{{ item.talla }}</strong></p>
+            {% endif %}
+
+            {% if item.color %}
+                <p class="mt-1 text-sm text-gray-500">Color: <strong>{{ item.color.nombre }}</strong></p>
+            {% endif %}
+
+            <p class="mt-1 text-sm text-gray-500">Garantía: {{ item.producto.dias_garantia }} días</p>
+
             <p class="text-lg text-red-600 font-bold mt-4">Subtotal: ${{ item.subtotal }}</p>
         </div>
     </div>
