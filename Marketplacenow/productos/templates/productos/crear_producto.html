@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nuevo Producto{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-12 bg-white p-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Publicar nuevo producto</h2>
+
+    {% if error %}
+    <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded mb-4">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Nombre del producto *</label>
+            <input type="text" name="nombre" value="{{ request.POST.nombre }}"
+                    class="w-full border px-4 py-2 rounded" required>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Descripción</label>
+            <textarea name="descripcion" rows="4"
+                        class="w-full border px-4 py-2 rounded">{{ request.POST.descripcion }}</textarea>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Precio *</label>
+            <input type="number" name="precio" value="{{ request.POST.precio }}"
+                    min="1" step="0.01" class="w-full border px-4 py-2 rounded" required>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Stock *</label>
+            <input type="number" name="stock" value="{{ request.POST.stock }}"
+                    min="0" class="w-full border px-4 py-2 rounded" required>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Categoría</label>
+            <select name="categoria" class="w-full border px-4 py-2 rounded">
+                {% for cat in categorias %}
+                <option value="{{ cat.id }}"
+                    {% if cat.id|stringformat:"s" == request.POST.categoria %}selected{% endif %}>
+                    {{ cat.NOMBRE_CATEGORIA }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Tallas</label>
+            <select name="tallas" multiple class="w-full border px-4 py-2 rounded">
+                {% for t in tallas %}
+                <option value="{{ t.id }}">{{ t.VALOR_TALLA }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Colores</label>
+            <select name="colores" multiple class="w-full border px-4 py-2 rounded">
+                {% for c in colores %}
+                <option value="{{ c.id }}">{{ c.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Marca</label>
+            <select name="marca" class="w-full border px-4 py-2 rounded">
+                <option value="">-- Sin marca --</option>
+                {% for m in marcas %}
+                <option value="{{ m.id }}"
+                    {% if m.id|stringformat:"s" == request.POST.marca %}selected{% endif %}>
+                    {{ m.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium mb-1">Imagen</label>
+            <input type="file" name="imagen" class="w-full border px-4 py-2 rounded bg-white">
+        </div>
+
+        <div class="pt-4">
+            <button type="submit"
+                    class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">
+                Publicar producto
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
