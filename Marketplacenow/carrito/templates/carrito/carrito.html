@@ -24,11 +24,15 @@
               <h3 class="text-base font-semibold text-gray-800">{{ item.producto.nombre }}</h3>
               <p class="text-sm text-gray-600">{{ item.producto.descripcion|truncatewords:8 }}</p>
               <p class="text-sm text-gray-500">Cantidad: {{ item.cantidad }}</p>
+
               {% if item.talla %}
-                <p class="text-sm text-gray-500">Talla: {{ item.talla.valor_talla }}</p>
+                  <p class="text-sm text-gray-500">Talla seleccionada: <strong>{{ item.talla }}</strong></p>
+              {% else %}
+                  <p style="color:red;">⚠️ Este ítem no tiene talla asociada</p>
               {% endif %}
+
               {% if item.color %}
-                <p class="text-sm text-gray-500">Color: {{ item.color.nombre }}</p>
+                <p class="text-sm text-gray-500">Color seleccionado: <strong>{{ item.color.nombre }}</strong></p>
               {% endif %}
             </div>
           </div>

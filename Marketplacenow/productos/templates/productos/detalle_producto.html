@@ -34,7 +34,7 @@
             <label class="block mb-1 font-semibold text-gray-700">Talla:</label>
             <select name="talla" form="form-carrito" class="w-full border border-gray-300 rounded px-3 py-2">
                 {% for talla in tallas %}
-                    <option value="{{ talla.id }}">{{ talla.valor }}</option>
+                    <option value="{{ talla.id }}">{{ talla }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -46,7 +46,7 @@
             <label class="block mb-1 font-semibold text-gray-700">Color:</label>
             <select name="color" form="form-carrito" class="w-full border border-gray-300 rounded px-3 py-2">
                 {% for color in colores %}
-                    <option value="{{ color.id }}">{{ color.nombre }}</option>
+                    <option value="{{ color.id }}">{{ color }}</option>
                 {% endfor %}
             </select>
         </div>
