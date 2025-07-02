@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import detalle
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -8,6 +9,11 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('register/', views.register, name='register'),
     path('perfil/', views.perfil, name='perfil'),
+    path('detalle/', views.detalle, name='detalle'),
+    path('direccion/', views.direccion, name='direccion'),
+    path('guardar_direccion/', views.guardar_direccion, name='guardar_direccion'),
+
+
 
     # Recuperación de contraseña
     path('olvide_contrasena/', auth_views.PasswordResetView.as_view(

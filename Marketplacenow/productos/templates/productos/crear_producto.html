@@ -7,90 +7,110 @@
 <div class="max-w-3xl mx-auto mt-12 bg-white p-8 rounded-lg shadow">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Publicar nuevo producto</h2>
 
-    {% if error %}
-    <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded mb-4">
-        {{ error }}
-    </div>
+    {% if errores %}
+        <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc pl-5">
+                {% for e in errores %}
+                    <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     <form method="POST" enctype="multipart/form-data" class="space-y-4">
         {% csrf_token %}
 
+        <!-- Nombre -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Nombre del producto *</label>
-            <input type="text" name="nombre" value="{{ request.POST.nombre }}"
-                    class="w-full border px-4 py-2 rounded" required>
+            <input type="text" name="nombre" value="{{ request.POST.nombre }}" class="w-full border px-4 py-2 rounded" required>
         </div>
 
+        <!-- Descripción -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Descripción</label>
-            <textarea name="descripcion" rows="4"
-                        class="w-full border px-4 py-2 rounded">{{ request.POST.descripcion }}</textarea>
+            <textarea name="descripcion" rows="4" class="w-full border px-4 py-2 rounded">{{ request.POST.descripcion }}</textarea>
         </div>
 
+        <!-- Precio -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Precio *</label>
-            <input type="number" name="precio" value="{{ request.POST.precio }}"
-                    min="1" step="0.01" class="w-full border px-4 py-2 rounded" required>
+            <input type="number" name="precio" value="{{ request.POST.precio }}" min="1" step="0.01" class="w-full border px-4 py-2 rounded" required>
         </div>
 
+        <!-- Stock -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Stock *</label>
-            <input type="number" name="stock" value="{{ request.POST.stock }}"
-                    min="0" class="w-full border px-4 py-2 rounded" required>
+            <input type="number" name="stock" value="{{ request.POST.stock }}" min="0" class="w-full border px-4 py-2 rounded" required>
         </div>
 
+        <!-- Categoría -->
         <div>
-            <label class="block text-gray-700 font-medium mb-1">Categoría</label>
-            <select name="categoria" class="w-full border px-4 py-2 rounded">
+            <label class="block text-gray-700 font-medium mb-1">Categoría *</label>
+            <select name="categoria" class="w-full border px-4 py-2 rounded" required>
+                <option value="" {% if not categoria_seleccionada %}selected{% endif %}>-- Selecciona una categoría --</option>
                 {% for cat in categorias %}
-                <option value="{{ cat.id }}"
-                    {% if cat.id|stringformat:"s" == request.POST.categoria %}selected{% endif %}>
-                    {{ cat.NOMBRE_CATEGORIA }}
-                </option>
+                    <option value="{{ cat.id }}"
+                        {% if cat.id|stringformat:"s" == categoria_seleccionada|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.NOMBRE_CATEGORIA }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
 
+        <!-- ✅ Tallas como checkboxes -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Tallas</label>
-            <select name="tallas" multiple class="w-full border px-4 py-2 rounded">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {% for t in tallas %}
-                <option value="{{ t.id }}">{{ t.VALOR_TALLA }}</option>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="tallas" value="{{ t.id }}"
+                        {% if t.id|stringformat:"s" in tallas_seleccionadas %}checked{% endif %}
+                        class="mr-2">
+                    {{ t.VALOR_TALLA }}
+                </label>
                 {% endfor %}
-            </select>
+            </div>
         </div>
 
+        <!-- Colores -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Colores</label>
-            <select name="colores" multiple class="w-full border px-4 py-2 rounded">
+            <select name="colores" multiple class="w-full border px-4 py-2 rounded bg-white">
                 {% for c in colores %}
-                <option value="{{ c.id }}">{{ c.nombre }}</option>
+                    <option value="{{ c.id }}"
+                        {% if c.id|stringformat:"s" in colores_seleccionados %}selected{% endif %}>
+                        {{ c.nombre }}
+                    </option>
                 {% endfor %}
             </select>
+            <p class="text-sm text-gray-500 mt-1">Usa Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</p>
         </div>
 
+        <!-- Marca -->
         <div>
             <label class="block text-gray-700 font-medium mb-1">Marca</label>
-            <select name="marca" class="w-full border px-4 py-2 rounded">
+            <select name="marca" class="w-full border px-4 py-2 rounded bg-white">
                 <option value="">-- Sin marca --</option>
                 {% for m in marcas %}
-                <option value="{{ m.id }}"
-                    {% if m.id|stringformat:"s" == request.POST.marca %}selected{% endif %}>
-                    {{ m.nombre }}
-                </option>
+                    <option value="{{ m.id }}"
+                        {% if m.id|stringformat:"s" == marca_seleccionada|stringformat:"s" %}selected{% endif %}>
+                        {{ m.nombre }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
 
+        <!-- Imagen -->
         <div>
-            <label class="block text-gray-700 font-medium mb-1">Imagen</label>
-            <input type="file" name="imagen" class="w-full border px-4 py-2 rounded bg-white">
+            <label class="block text-gray-700 font-medium mb-1">Imagen (JPG o PNG)</label>
+            <input type="file" name="imagen" accept=".jpg,.jpeg,.png" class="w-full border px-4 py-2 rounded bg-white">
+            <p class="text-sm text-gray-500 mt-1">Sube una imagen en formato .jpg o .png</p>
         </div>
 
+        <!-- Botón -->
         <div class="pt-4">
-            <button type="submit"
-                    class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">
+            <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">
                 Publicar producto
             </button>
         </div>

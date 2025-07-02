@@ -88,3 +88,6 @@ def ordenar_producto(request, producto_id):
             })
 
     return redirect('detalle_producto', producto_id=producto.id)
+
+def mi_orden(request):
+    return render(request, 'ordenes/mi_orden.html')

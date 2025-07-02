@@ -52,3 +52,12 @@ def perfil(request):
         'nombre': request.user.first_name,
         'ordenes': ordenes,
     })
+
+def detalle(request):
+    return render(request, 'detalle.html')
+
+def direccion(request):
+    return render(request, 'direccion.html')
+
+def guardar_direccion(request):
+    return render(request, 'guardar_direccion.html')

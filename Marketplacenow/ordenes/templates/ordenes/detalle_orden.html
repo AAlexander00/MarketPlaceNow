@@ -15,7 +15,12 @@
 
     {% for item in orden.detalles.all %}
     <div class="flex items-start space-x-6 mb-6">
-        <img src="{{ item.producto.imagen.url if item.producto.imagen else '/static/images/no-image.png' }}" alt="{{ item.producto.nombre }}" class="w-40 h-40 object-cover rounded shadow">
+        {% if item.producto.imagen %}
+            <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="w-40 h-40 object-cover rounded shadow">
+        {% else %}
+            <img src="{% static 'images/no-image.png' %}" alt="{{ item.producto.nombre }}" class="w-40 h-40 object-cover rounded shadow">
+        {% endif %}
+        
         <div class="flex-1">
             <h3 class="text-xl font-semibold text-gray-900">{{ item.producto.nombre }}</h3>
             <p class="text-gray-600 mt-2">{{ item.producto.descripcion }}</p>
@@ -51,10 +56,6 @@
     <p class="text-center mt-10 text-green-600 font-semibold">Esta orden ya fue pagada ✅</p>
     {% endif %}
 
-    <div class="text-center mt-6">
-        <a href="{% url 'inicio' %}" class="text-sm text-gray-600 hover:text-red-600 underline">
-            Volver al inicio
-        </a>
-    </div>
+    
 </div>
 {% endblock %}

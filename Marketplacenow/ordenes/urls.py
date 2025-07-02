@@ -5,4 +5,5 @@ urlpatterns = [
     path('orden/<int:orden_id>/', views.detalle_orden, name='detalle_orden'),
     path('orden/<int:orden_id>/pagar/', views.pagar_orden, name='pagar_orden'),
     path('ordenar/<int:producto_id>/', views.ordenar_producto, name='ordenar_producto'),
+    path('mi_orden/', views.mi_orden, name='mi_orden')
 ]

@@ -1,10 +1,15 @@
-from .models import CarritoItem
+from carrito.models import CarritoItem
+from productos.models import Favorito
 
-def contador_carrito(request):
+def contadores_generales(request):
+    total_items_carrito = 0
+    total_favoritos = 0
+
     if request.user.is_authenticated:
-        total = CarritoItem.objects.filter(usuario=request.user).count()
-    else:
-        total = 0
+        total_items_carrito = CarritoItem.objects.filter(usuario=request.user).count()
+        total_favoritos = Favorito.objects.filter(usuario=request.user).count()
+
     return {
-        'total_items_carrito': total
+        'total_items_carrito': total_items_carrito,
+        'total_favoritos': total_favoritos
     }

@@ -14,7 +14,7 @@
   <!-- Buscador -->
   <form method="get" action="{% url 'busqueda' %}" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <input type="text" name="q" value="{{ query }}" placeholder="Buscar productos..." class="border border-gray-300 rounded px-4 py-2 w-full md:w-1/3 focus:outline-none focus:ring focus:ring-red-300">
-    <a href="{% url 'inicio' %}" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition text-sm">Volver al inicio</a>
+    
   </form>
 
   {% if resultados %}
@@ -22,11 +22,15 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
       {% for producto in resultados %}
         <div class="border rounded-lg p-4 hover:shadow hover:border-red-400 transition">
-          <a href="{% url 'detalle_producto' producto.ID_PRODUCTO %}">
-            <img src="/media/{{ producto.IMAGEN }}" alt="{{ producto.NOMBRE_PRODUCTO }}" class="w-full h-48 object-cover rounded mb-3" />
-            <h3 class="text-sm font-semibold text-gray-800">{{ producto.NOMBRE_PRODUCTO }}</h3>
-            <p class="text-xs text-gray-500 mb-1">{{ producto.DESCRIPCION|truncatewords:6 }}</p>
-            <p class="text-red-600 font-bold text-sm">${{ producto.PRECIO }}</p>
+          <a href="{% url 'detalle_producto' producto.id %}">
+            {% if producto.imagen %}
+              <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-48 object-cover rounded mb-3" />
+            {% else %}
+              <img src="{% static 'images/no-image.png' %}" alt="Sin imagen" class="w-full h-48 object-cover rounded mb-3" />
+            {% endif %}
+            <h3 class="text-sm font-semibold text-gray-800">{{ producto.nombre }}</h3>
+            <p class="text-xs text-gray-500 mb-1">{{ producto.descripcion|truncatewords:6 }}</p>
+            <p class="text-red-600 font-bold text-sm">${{ producto.precio }}</p>
           </a>
         </div>
       {% endfor %}

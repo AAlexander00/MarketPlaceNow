@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mis Direcciones - MarketPlaceNow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-start justify-center p-8">
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+
+  <!-- Sidebar Izquierdo -->
+  <aside class="bg-white p-4 shadow rounded-md col-span-1 space-y-4 text-sm">
+    <h3 class="text-lg font-bold text-gray-700">Centro Personal</h3>
+    <ul class="space-y-1">
+      <li><a href="{% url 'perfil' %}" class="hover:text-red-600">Mis Pedidos</a></li>
+      <li><a href="{% url 'detalle' %}" class="hover:text-red-600">Detalles De Perfil</a></li>
+      <li><a href="{%url 'direccion'%}" class="hover:text-red-600">Direcciones</a></li>
+    </ul>
+
+    <!-- Botón cerrar sesión -->
+    <form action="{% url 'logout' %}" method="post" class="pt-4">
+      {% csrf_token %}
+      <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition font-semibold text-sm">
+        Cerrar Sesión
+      </button>
+    </form>
+  </aside>
+
+    <!-- Contenido Derecho -->
+    <main class="bg-white p-8 rounded-lg shadow col-span-1 md:col-span-3">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-red-700">Mis Direcciónes</h1>
+        <a href="{% url 'guardar_direccion' %}" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+          Añadir Nueva
+        </a>
+      </div>
+
+      <div class="text-gray-500 text-center py-12 border border-dashed border-gray-300 rounded">
+        <p class="text-lg">No tienes direcciones guardadas</p>
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>
+
+{% endblock %}

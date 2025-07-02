@@ -9,14 +9,11 @@
 <div class="w-full relative carousel-container overflow-hidden">
   <div class="relative">
     <img src="{% static 'images/banner1.jpg' %}" alt="Slider1"
-        class="w-full object-contain rounded-lg fade-carousel"
-        style="opacity: 1;">
+         class="w-full object-contain rounded-lg fade-carousel" style="opacity: 1;">
     <img src="{% static 'images/banner2.jpg' %}" alt="Slider2"
-        class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel"
-        style="opacity: 0;">
+         class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
     <img src="{% static 'images/banner3.jpg' %}" alt="Slider3"
-        class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel"
-        style="opacity: 0;">
+         class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
   </div>
 
   <button id="prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 arrow-btn">&lsaquo;</button>
@@ -28,11 +25,9 @@
   <section class="max-w-7xl mx-auto px-4 mt-16">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
       {% for producto in productos %}
-        {% url 'detalle_producto' producto.id as producto_url %}
-        {% if producto.id and producto_url %}
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
           <!-- Imagen del producto -->
-          <a href="{{ producto_url }}">
+          <a href="{% url 'detalle_producto' producto.id %}">
             <div class="w-full h-72 bg-gray-100">
               {% if producto.imagen %}
                 <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover" />
@@ -43,15 +38,15 @@
           </a>
 
           <div class="p-6 flex flex-col justify-between h-48">
-            <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{{ producto.nombre|default:"Producto sin nombre" }}</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-2 truncate">{{ producto.nombre|default:"Producto sin nombre" }}</h3>
             <p class="text-base text-gray-600 flex-1 line-clamp-2">{{ producto.descripcion }}</p>
 
             <div class="flex items-center justify-between mt-4">
               <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
 
               <div class="flex space-x-2">
-                <!-- Botón para agregar al carrito -->
-                <button onclick="manejarAgregarProducto({{ producto.id }}&#44; {{ producto.tallas.all|length }}&#44; {{ producto.colores.all|length }})"
+                <!-- Botón agregar al carrito -->
+                <button onclick="manejarAgregarProducto({{ producto.id }}, {{ producto.tallas.all|length }}, {{ producto.colores.all|length }})"
                         class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300">
                   <i class="fas fa-shopping-cart"></i>
                 </button>
@@ -64,7 +59,6 @@
             </div>
           </div>
         </div>
-        {% endif %}
       {% empty %}
         <p class="text-center col-span-full text-gray-500">No hay productos disponibles.</p>
       {% endfor %}
@@ -123,7 +117,6 @@
     return cookieValue;
   }
 
-  // ✅ Mostrar mensaje de error arriba
   function mostrarMensajeError(texto) {
     const errorBox = document.createElement("div");
     errorBox.textContent = texto;
@@ -147,3 +140,4 @@
 </style>
 
 {% endblock content %}
+

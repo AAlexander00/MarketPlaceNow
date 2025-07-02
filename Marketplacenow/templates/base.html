@@ -41,31 +41,30 @@
   </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<!-- ✅ Cambiado: flex-col + min-h-screen -->
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
 
   {% block top_banner %}{% endblock top_banner %}
 
-  <!-- NAVBAR -->
-  <header class="{% if es_inicio %}absolute top-0 left-0 w-full z-50 bg-transparent text-white{% else %}bg-white border-b shadow-sm w-full text-gray-800{% endif %} font-sans">
+  <!-- ✅ HEADER completo con menú profesional y submenús -->
+  <header class="{% if es_inicio %}absolute top-0 left-0 w-full z-50 bg-transparent text-white{% else %}bg-white border-b shadow-sm w-full text-gray-800{% endif %} font-sans" x-data="{ open: false }">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="w-1/3"></div>
 
-      <!-- ✅ Logo corregido -->
+      <!-- Logo -->
       <div class="w-1/3 text-center">
         <a href="/" class="font-[Playfair] text-3xl font-bold tracking-wide {% if es_inicio %}text-white{% else %}text-black{% endif %}">
           MARKETPLACENOW
         </a>
       </div>
 
-      <!-- Íconos -->
+      <!-- Íconos + Botón publicar -->
       <div class="w-1/3 flex justify-end items-center space-x-6 text-xl {% if es_inicio %}text-white{% else %}text-gray-700{% endif %}">
+
         <a href="{% url 'busqueda' %}" class="hover:text-black transition"><i class="fas fa-search"></i></a>
 
         {% if user.is_authenticated %}
           <a href="{% url 'perfil' %}" class="hover:text-black transition"><i class="fas fa-user"></i></a>
-        {% else %}
-          <a href="{% url 'login' %}" class="hover:text-black transition"><i class="fas fa-user"></i></a>
-        {% endif %}
 
         <!-- Carrito -->
         <a href="{% url 'ver_carrito' %}" class="relative hover:text-black transition">
@@ -78,31 +77,90 @@
         <!-- Favoritos -->
         <a href="{% url 'favoritos' %}" class="relative hover:text-black transition">
           <i class="fas fa-heart"></i>
-          <span class="absolute -top-2 -right-3 bg-red-700 text-white text-xs rounded-full px-1">0</span>
+          <span class="absolute -top-2 -right-3 bg-red-700 text-white text-xs rounded-full px-1">
+            {{ total_favoritos|default:0 }}
+          </span>
         </a>
       </div>
     </div>
 
-    <!-- Menú inferior -->
+    <!-- ✅ Menú inferior con categorías desplegables -->
     <nav class="{% if es_inicio %}bg-transparent{% else %}bg-white border-t{% endif %}">
       <div class="max-w-7xl mx-auto px-6 py-3 flex justify-center space-x-10 text-sm font-semibold uppercase tracking-widest {% if es_inicio %}text-white{% else %}text-gray-800{% endif %}">
-        <a href="#" class="hover:text-black">CATEGORIAS</a>
-        <a href="#" class="hover:text-black">OFERTAS</a>
-        <a href="#" class="hover:text-black">NUEVO</a>
-        <a href="#" class="hover:text-black">Accessories</a>
-        <a href="#" class="hover:text-black">Fragrances</a>
-        <a href="#" class="hover:text-black">Makeup</a>
-        <a href="#" class="hover:text-black">Gifts</a>
-        <a href="#" class="hover:text-black">Stories</a>
-        <a href="#" class="hover:text-black">CH Carolina Herrera</a>
+       
+        <!-- CATEGORÍAS -->
+        <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+          <button class="hover:text-black {% if es_inicio %}text-white{% endif %}">CATEGORÍAS</button>
+          <div
+            x-show="open"
+            x-transition
+            class="absolute top-8 left-0 w-64 {% if es_inicio %}bg-transparent text-white{% else %}bg-white/90 text-gray-800{% endif %} backdrop-blur {% if not es_inicio %}border border-gray-200{% endif %} rounded-lg shadow-xl py-3 z-50 text-left text-sm"
+          >
+            <!-- Electrónica -->
+            <div class="group relative px-4 py-2 hover:bg-gray-100/80" x-data="{ show: false }" @mouseenter="show = true" @mouseleave="show = false">
+              <p class="font-semibold {% if es_inicio %}text-black{% else %}text-red-700{% endif %} cursor-pointer">Electrónica</p>
+              <div x-show="show" x-transition class="absolute left-full top-0 ml-1 w-56 {% if es_inicio %}bg-gray-100 text-black{% else %}bg-white/90 text-gray-800{% endif %} backdrop-blur border rounded-md shadow-lg py-2">
+                <a href="{% url 'telefono' %}" class="block px-4 py-1 hover:text-red-600">Teléfonos</a>
+                <a href="{% url 'computador' %}" class="block px-4 py-1 hover:text-red-600">Computadores</a>
+                <a href="{% url 'accesorios'%}" class="block px-4 py-1 hover:text-red-600">Accesorios</a>
+              </div>
+            </div>
+
+            <!-- Ropa -->
+            <div class="group relative px-4 py-2 hover:bg-gray-100/80" x-data="{ show: false }" @mouseenter="show = true" @mouseleave="show = false">
+              <p class="font-semibold {% if es_inicio %}text-black{% else %}text-red-700{% endif %} cursor-pointer">Ropa</p>
+              <div x-show="show" x-transition class="absolute left-full top-0 ml-1 w-56 {% if es_inicio %}bg-gray-100 text-black{% else %}bg-white/90 text-gray-800{% endif %} backdrop-blur border rounded-md shadow-lg py-2">
+                <a href="{% url 'hombres'%}" class="block px-4 py-1 hover:text-red-600">Hombres</a>
+                <a href="{% url 'mujeres'%}" class="block px-4 py-1 hover:text-red-600">Mujeres</a>
+                <a href="{% url 'ninos'%}" class="block px-4 py-1 hover:text-red-600">Niños</a>
+                <a href="{% url 'joyas'%}" class="block px-4 py-1 hover:text-red-600">Joyas</a>
+                <a href="{% url 'calzado'%}" class="block px-4 py-1 hover:text-red-600">Calzado</a>
+              </div>
+            </div>
+
+            <!-- Hogar y Jardín -->
+            <div class="group relative px-4 py-2 hover:bg-gray-100/80" x-data="{ show: false }" @mouseenter="show = true" @mouseleave="show = false">
+              <p class="font-semibold {% if es_inicio %}text-black{% else %}text-red-700{% endif %} cursor-pointer">Hogar y Jardín</p>
+              <div x-show="show" x-transition class="absolute left-full top-0 ml-1 w-56 {% if es_inicio %}bg-gray-100 text-black{% else %}bg-white/90 text-gray-800{% endif %} backdrop-blur border rounded-md shadow-lg py-2">
+                <a href="{% url 'muebles'%}" class="block px-4 py-1 hover:text-red-600">Muebles</a>
+                <a href="{% url 'exterior'%}" class="block px-4 py-1 hover:text-red-600">Exterior</a>
+                <a href="{% url 'interior'%}" class="block px-4 py-1 hover:text-red-600">Interior</a>
+                <a href="{% url 'decoracion'%}" class="block px-4 py-1 hover:text-red-600">Decoración</a>
+                <a href="{% url 'jardineria'%}" class="block px-4 py-1 hover:text-red-600">Jardinería</a>
+              </div>
+            </div>
+
+            <!-- Libros -->
+            <div class="group relative px-4 py-2 hover:bg-gray-100/80" x-data="{ show: false }" @mouseenter="show = true" @mouseleave="show = false">
+              <p class="font-semibold {% if es_inicio %}text-black{% else %}text-red-700{% endif %} cursor-pointer">Libros</p>
+              <div x-show="show" x-transition class="absolute left-full top-0 ml-1 w-56 {% if es_inicio %}bg-gray-100 text-black{% else %}bg-white/90 text-gray-800{% endif %} backdrop-blur border rounded-md shadow-lg py-2">
+                <a href="{% url 'ficcion'%}" class="block px-4 py-1 hover:text-red-600">Ficción</a>
+                <a href="{% url 'romance'%}" class="block px-4 py-1 hover:text-red-600">Romance</a>
+                <a href="{% url 'infantiles'%}" class="block px-4 py-1 hover:text-red-600">Infantiles</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Otros enlaces -->
+        <a href="{% url 'ofertas' %}" class="hover:text-black">OFERTAS</a>
+        <a href="{% url 'nuevo' %}" class="hover:text-black">NUEVO</a>
+        <!-- ✅ Botón "Publicar producto" -->
+        <a href="{% url 'crear_producto' %}" class="hover:text-black">VENDER</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="hover:text-black transition"><i class="fas fa-user"></i></a>
+      {% endif %}
       </div>
     </nav>
   </header>
 
-  {% block content %}{% endblock content %}
+  <!-- ✅ Bloque de contenido dentro de un MAIN con flex-grow -->
+  <main class="flex-grow">
+    {% block content %}{% endblock content %}
+  </main>
 
-  <!-- FOOTER -->
-  <footer class="bg-black text-gray-300 py-8 mt-16 w-full">
+  <!-- ✅ FOOTER siempre abajo -->
+  <footer class="bg-black text-gray-300 py-8 mt-6 w-full">
     <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
         <h6 class="uppercase font-semibold mb-3">Explora</h6>
@@ -137,7 +195,9 @@
     <div class="text-center mt-8 text-gray-500">&copy; 2025 MARKETPLACENOW</div>
   </footer>
 
+  <!-- Scripts -->
   <script src="{% static 'js/inicio.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 </body>
 </html>

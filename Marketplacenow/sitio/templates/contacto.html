@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-
 {% load static %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md mt-10">
   <h2 class="text-3xl font-semibold text-gray-800 mb-6">Contáctanos</h2>
   <form action="#" method="POST" class="space-y-6">
+    {% csrf_token %}  <!-- 🔑 Muy importante -->
+
     <div>
       <label for="name" class="block text-gray-700 font-medium mb-2">Nombre</label>
       <input
@@ -17,6 +18,7 @@
         placeholder="Tu nombre"
       />
     </div>
+
     <div>
       <label for="email" class="block text-gray-700 font-medium mb-2">Correo electrónico</label>
       <input
@@ -28,6 +30,7 @@
         placeholder="tu@email.com"
       />
     </div>
+
     <div>
       <label for="subject" class="block text-gray-700 font-medium mb-2">Asunto</label>
       <input
@@ -39,6 +42,7 @@
         placeholder="Asunto del mensaje"
       />
     </div>
+
     <div>
       <label for="message" class="block text-gray-700 font-medium mb-2">Mensaje</label>
       <textarea
@@ -50,6 +54,7 @@
         placeholder="Escribe tu mensaje aquí..."
       ></textarea>
     </div>
+
     <button
       type="submit"
       class="w-full bg-red-600 text-white font-semibold py-3 rounded-md hover:bg-red-700 transition-colors"
@@ -58,5 +63,4 @@
     </button>
   </form>
 </div>
-
 {% endblock content %}

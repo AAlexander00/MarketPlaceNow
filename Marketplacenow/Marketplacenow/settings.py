@@ -67,7 +67,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 # ✅ Estos son los que debes tener activos:
-                'carrito.context_processors.contador_carrito',
+                'carrito.context_processors.contadores_generales',
                 'sitio.context_processors.es_inicio_context',
             ],
         },

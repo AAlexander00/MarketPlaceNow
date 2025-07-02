@@ -5,6 +5,7 @@ from .models import Producto, Talla, Color, Marca, Categoria
 from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib import messages
+from .models import Favorito
 
 def busqueda(request):
     query = request.GET.get('q', '')
@@ -12,8 +13,8 @@ def busqueda(request):
 
     if query:
         resultados = Producto.objects.filter(
-            Q(NOMBRE_PRODUCTO__icontains=query) | 
-            Q(DESCRIPCION__icontains=query)
+            Q(nombre__icontains=query) |
+            Q(descripcion__icontains=query)
         )
 
     return render(request, 'productos/busqueda.html', {
@@ -67,21 +68,36 @@ def crear_producto(request):
         precio = request.POST.get('precio')
         stock = request.POST.get('stock')
         categoria_id = request.POST.get('categoria')
-        tallas_ids = request.POST.getlist('tallas')
-        colores_ids = request.POST.getlist('colores')
-        marcas_ids = request.POST.getlist('marcas')
+        colores_ids = [c for c in request.POST.getlist('colores') if c.strip()]
+        marca_id = request.POST.get('marca')
         imagen = request.FILES.get('imagen')
+
+        # ✅ Depuración (tallas que el usuario supuestamente selecciona)
+        tallas_ids = request.POST.getlist('tallas')
+        print("✅ Tallas recibidas del formulario:", tallas_ids)
 
         errores = []
 
+        # Validaciones principales
         if not nombre:
             errores.append("El nombre del producto es obligatorio.")
-        if not precio or not precio.replace('.', '', 1).isdigit() or float(precio) <= 0:
-            errores.append("El precio debe ser un número positivo.")
-        if not stock or not stock.isdigit() or int(stock) < 0:
-            errores.append("El stock debe ser un número entero positivo.")
-        if not categoria_id:
-            errores.append("Debe seleccionar una categoría.")
+        try:
+            precio = float(precio)
+            if precio <= 0:
+                errores.append("El precio debe ser un número positivo.")
+        except:
+            errores.append("El precio debe ser un número válido.")
+
+        try:
+            stock = int(stock)
+            if stock < 0:
+                errores.append("El stock debe ser un número entero positivo.")
+        except:
+            errores.append("El stock debe ser un número entero válido.")
+
+        categoria_obj = Categoria.objects.first()
+        if not categoria_obj:
+            errores.append("⚠️ No hay categorías registradas en el sistema.")
 
         if errores:
             categorias = Categoria.objects.all()
@@ -94,29 +110,39 @@ def crear_producto(request):
                 'tallas': tallas,
                 'colores': colores,
                 'marcas': marcas,
+                'tallas_seleccionadas': tallas_ids,
+                'colores_seleccionados': colores_ids,
+                'marca_seleccionada': marca_id,
+                'categoria_seleccionada': categoria_id,
+                'request': request,
             })
 
+        # Crear producto
         producto = Producto.objects.create(
             nombre=nombre,
             descripcion=descripcion,
             precio=precio,
             stock=stock,
-            categoria_id=categoria_id,
+            categoria=categoria_obj,
             publicado_por=request.user,
             imagen=imagen
         )
 
-        if tallas_ids:
-            producto.tallas.set(tallas_ids)
+        # ✅ Plan de emergencia: asignar tallas S, M, L y XL por defecto
+        tallas_predeterminadas = Talla.objects.filter(VALOR_TALLA__in=["S", "M", "L", "XL"])
+        producto.tallas.set(tallas_predeterminadas)
+
+        # Colores y marcas (reales del formulario)
         if colores_ids:
             producto.colores.set(colores_ids)
-        if marcas_ids:
-            producto.marcas.set(marcas_ids)
+        if marca_id:
+            producto.marcas.set([marca_id])
 
         producto.save()
-        messages.success(request, 'Producto creado correctamente.')
+        messages.success(request, '✅ Producto creado correctamente.')
         return redirect('detalle_producto', producto_id=producto.id)
 
+    # GET
     categorias = Categoria.objects.all()
     tallas = Talla.objects.all()
     colores = Color.objects.all()
@@ -126,4 +152,71 @@ def crear_producto(request):
         'tallas': tallas,
         'colores': colores,
         'marcas': marcas,
+        'tallas_seleccionadas': [],
+        'colores_seleccionados': [],
+        'marca_seleccionada': '',
+        'categoria_seleccionada': '',
+        'request': request,
     })
+
+
+@login_required
+def toggle_favorito(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    favorito, creado = Favorito.objects.get_or_create(usuario=request.user, producto=producto)
+
+    if not creado:
+        favorito.delete()
+        messages.info(request, f'❌ Producto eliminado de favoritos.')
+    else:
+        messages.success(request, f'✅ Producto agregado a favoritos.')
+
+    return redirect(request.META.get('HTTP_REFERER', 'detalle_producto', producto_id=producto.id))
+
+
+@login_required
+def ver_favoritos(request):
+    favoritos = Favorito.objects.filter(usuario=request.user).select_related('producto')
+    productos = [f.producto for f in favoritos]
+    return render(request, 'productos/favoritos.html', {
+        'favoritos': productos
+    })
+
+
+def ofertas(request):
+    return render(request, 'productos/ofertas.html',)
+def nuevo(request):
+    return render(request, 'productos/nuevo.html',)
+
+def telefono(request):
+    return render(request, 'productos/telefono.html')
+def computador(request):
+    return render(request, 'productos/computador.html')
+def accesorios(request):
+    return render(request, 'productos/accesorios.html')
+def hombres(request):
+    return render(request, 'productos/hombres.html')
+def mujeres(request):
+    return render(request, 'productos/mujeres.html')
+def ninos(request):
+    return render(request, 'productos/ninos.html')
+def joyas(request):
+    return render(request, 'productos/joyas.html')
+def calzado(request):
+    return render(request, 'productos/calzado.html')
+def muebles(request):
+    return render(request, 'productos/muebles.html')
+def exterior(request):
+    return render(request, 'productos/exterior.html')
+def interior(request):
+    return render(request, 'productos/interior.html')
+def decoracion(request):
+    return render(request, 'productos/decoracion.html')
+def jardineria(request):
+    return render(request, 'productos/jardineria.html')
+def ficcion(request):
+    return render(request, 'productos/ficcion.html')
+def romance(request):
+    return render(request, 'productos/romance.html')
+def infantiles(request):
+    return render(request, 'productos/infantiles.html')

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+
+  <!-- Sidebar Izquierdo -->
+  <aside class="bg-white p-4 shadow rounded-md col-span-1 space-y-4 text-sm">
+    <h3 class="text-lg font-bold text-gray-700">Centro Personal</h3>
+    <ul class="space-y-1">
+      <li><a href="{% url 'perfil' %}" class="hover:text-red-600">Mis Pedidos</a></li>
+      <li><a href="{% url 'detalle' %}" class="hover:text-red-600">Detalles De Perfil</a></li>
+      <li><a href="{%url 'direccion'%}" class="hover:text-red-600">Direcciones</a></li>
+    </ul>
+
+    <!-- Botón cerrar sesión -->
+    <form action="{% url 'logout' %}" method="post" class="pt-4">
+      {% csrf_token %}
+      <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition font-semibold text-sm">
+        Cerrar Sesión
+      </button>
+    </form>
+  </aside>
+
+  <!-- Contenido Principal Derecha -->
+  <section class="col-span-1 md:col-span-3">
+    <div class="bg-white p-8 rounded-2xl shadow-md w-full">
+      <h1 class="text-3xl font-bold mb-6 text-left text-red-700">Mis Detalles</h1>
+
+      <form class="space-y-6">
+        <!-- Detalles Personales -->
+        <div>
+          <h2 class="text-lg font-semibold mb-2 text-gray-700">Detalles Personales</h2>
+
+          <label class="block mb-1 font-medium">Título *</label>
+          <select class="w-1/2 border border-gray-300 rounded p-2">
+            <option>Seleccionar</option>
+            <option>Mujer</option>
+            <option>Hombre</option>
+            <option>Prefiero No Decir</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 font-medium">Nombre *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Juliana">
+          </div>
+          <div>
+            <label class="block mb-1 font-medium">Apellido *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Aguiar">
+          </div>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">Fecha de nacimiento *</label>
+          <div class="flex gap-2">
+            <select class="border border-gray-300 rounded p-2">
+              <option>1</option>
+              <!-- Días 1-31 -->
+            </select>
+            <select class="border border-gray-300 rounded p-2">
+              <option>1</option>
+              <!-- Meses 1-12 -->
+            </select>
+            <select class="border border-gray-300 rounded p-2">
+              <option>2000</option>
+              <!-- Años -->
+            </select>
+          </div>
+          <p class="text-red-500 text-sm mt-1">Debes tener 18 años o más</p>
+        </div>
+
+        <!-- Contraseña -->
+        <div>
+          <h2 class="text-lg font-semibold mb-2 text-gray-700">Cambiar Contraseña</h2>
+
+          <label class="block mb-1 font-medium">Contraseña Actual</label>
+          <input type="password" class="w-1/2 border border-gray-300 rounded p-2">
+
+          <label class="block mb-1 font-medium mt-4">Nueva Contraseña</label>
+          <input type="password" class="w-1/2 border border-gray-300 rounded p-2">
+
+          <label class="block mb-1 font-medium mt-4">Confirmar Nueva Contraseña</label>
+          <input type="password" class="w-1/2 border border-gray-300 rounded p-2">
+        </div>
+
+        <!-- Check de Términos -->
+        <div class="flex items-start space-x-2">
+          <input type="checkbox" id="terms" name="terms" class="mt-1">
+          <label for="terms" class="text-gray-700 text-sm">
+            Acepto que MarketPlaceNow pueda recopilar mis datos personales de acuerdo con la 
+            <a href="{% url 'privacidad' %}" class="underline text-blue-600 hover:text-blue-800">política de privacidad</a> y los 
+            <a href="{% url 'terminos' %}" class="underline text-blue-600 hover:text-blue-800">términos y condiciones</a>.
+          </label>
+        </div>
+
+        <!-- Botón Guardar Cambios -->
+        <div class="flex text-left">
+          <button type="submit" class="bg-red-700 text-white px-8 py-3 rounded hover:bg-gray-800">
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}

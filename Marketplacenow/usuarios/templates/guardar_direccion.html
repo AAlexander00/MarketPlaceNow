@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mi Dirección - MarketPlaceNow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-start justify-center p-8">
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 w-full max-w-6xl">
+    
+    <!-- Sidebar Izquierdo -->
+    <aside class="bg-white p-6 rounded-lg shadow col-span-1 space-y-4">
+      <h3 class="text-lg font-bold text-gray-700">Centro Personal</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="{% url 'perfil' %}" class="hover:text-red-600">Mis Pedidos</a></li>
+        <li><a href="{% url 'detalle' %}" class="hover:text-red-600">Detalles De Perfil</a></li>
+        <li><a href="{% url 'direccion' %}" class="text-red-700 font-semibold">Direcciónes</a></li>
+        <li><a href="#" class="hover:text-red-600">Mi Correo</a></li>
+      </ul>
+      <form action="{% url 'logout' %}" method="post" class="pt-4">
+        {% csrf_token %}
+        <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition text-sm">
+          Cerrar Sesión
+        </button>
+      </form>
+    </aside>
+
+    <!-- Contenido Derecho -->
+    <main class="bg-white p-8 rounded-lg shadow col-span-1 md:col-span-3">
+      <h1 class="text-2xl font-bold mb-6 text-red-700">Mi Dirección</h1>
+      
+      <form class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 font-medium">Nombre *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Juliana">
+          </div>
+          <div>
+            <label class="block mb-1 font-medium">Apellido *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Aguiar">
+          </div>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">Dirección *</label>
+          <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Calle 123 #45-67">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-1 font-medium">Ciudad *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="Bogotá">
+          </div>
+          <div>
+            <label class="block mb-1 font-medium">Código Postal *</label>
+            <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="110111">
+          </div>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">Teléfono *</label>
+          <input type="text" class="w-full border border-gray-300 rounded p-2" placeholder="+57 300 1234567">
+        </div>
+
+        <div class="flex justify-start">
+          <button type="submit" class="bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800">
+            Guardar Dirección
+          </button>
+        </div>
+      </form>
+    </main>
+
+  </div>
+</body>
+</html>
+
+{% endblock %}
