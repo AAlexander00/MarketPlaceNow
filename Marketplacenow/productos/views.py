@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import Favorito
+from django.urls import reverse
 
 def busqueda(request):
     query = request.GET.get('q', '')
@@ -171,7 +172,11 @@ def toggle_favorito(request, producto_id):
     else:
         messages.success(request, f'✅ Producto agregado a favoritos.')
 
-    return redirect(request.META.get('HTTP_REFERER', 'detalle_producto', producto_id=producto.id))
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    else:
+        return redirect(reverse('detalle_producto', args=[producto.id]))
 
 
 @login_required

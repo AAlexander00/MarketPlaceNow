@@ -17,25 +17,30 @@
           </div>
         </a>
 
+        <!-- Info del producto -->
         <div class="p-6 flex flex-col justify-between h-48">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{{ producto.nombre|default:"Producto sin nombre" }}</h3>
+          <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
+            {{ producto.nombre|default:"Producto sin nombre" }}
+          </h3>
           <p class="text-base text-gray-600 flex-1 line-clamp-2">{{ producto.descripcion }}</p>
 
           <div class="flex items-center justify-between mt-4">
             <p class="text-red-700 font-bold text-2xl">${{ producto.precio }}</p>
 
             <div class="flex space-x-2">
-              <!-- Nuevo botón de agregar -->
+              <!-- Ver detalles -->
               <a href="{{ producto_url }}"
                   class="bg-gray-200 text-black px-3 py-2 rounded-full hover:bg-gray-300"
                   title="Ver detalles y agregar">
                 <i class="fas fa-shopping-cart"></i>
               </a>
 
-              <!-- Favoritos -->
-              <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
+              <!-- Agregar/Quitar de Favoritos -->
+              <a href="{% url 'toggle_favorito' producto.id %}"
+                  class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200"
+                  title="Agregar o quitar de favoritos">
                 <i class="fas fa-heart"></i>
-              </button>
+              </a>
             </div>
           </div>
         </div>

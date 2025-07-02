@@ -4,16 +4,15 @@
 {% block title %}Inicio{% endblock title %}
 
 {% block content %}
-
 <!-- Carrusel -->
 <div class="w-full relative carousel-container overflow-hidden">
   <div class="relative">
     <img src="{% static 'images/banner1.jpg' %}" alt="Slider1"
-         class="w-full object-contain rounded-lg fade-carousel" style="opacity: 1;">
+          class="w-full object-contain rounded-lg fade-carousel" style="opacity: 1;">
     <img src="{% static 'images/banner2.jpg' %}" alt="Slider2"
-         class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
+          class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
     <img src="{% static 'images/banner3.jpg' %}" alt="Slider3"
-         class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
+          class="w-full object-contain absolute top-0 left-0 rounded-lg fade-carousel" style="opacity: 0;">
   </div>
 
   <button id="prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 arrow-btn">&lsaquo;</button>
@@ -51,10 +50,13 @@
                   <i class="fas fa-shopping-cart"></i>
                 </button>
 
-                <!-- Favoritos -->
-                <button type="button" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
-                  <i class="fas fa-heart"></i>
-                </button>
+                <!-- Botón favoritos con formulario -->
+                <form method="POST" action="{% url 'toggle_favorito' producto.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="bg-red-100 text-red-600 px-3 py-2 rounded-full hover:bg-red-200">
+                    <i class="fas fa-heart"></i>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -127,6 +129,22 @@
       errorBox.remove();
     }, 3000);
   }
+
+  // Evita que el botón de favoritos provoque scroll-top
+  document.querySelectorAll('form[action*="toggle-favorito"]').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Evita salto
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      }).then(() => {
+        location.reload();  // Recarga la página para reflejar el cambio (puedes quitar esto si no lo necesitas)
+      });
+    });
+  });
 </script>
 
 <style>
@@ -140,4 +158,3 @@
 </style>
 
 {% endblock content %}
-
