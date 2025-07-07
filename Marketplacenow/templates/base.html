@@ -87,7 +87,7 @@
     <!-- ✅ Menú inferior con categorías desplegables -->
     <nav class="{% if es_inicio %}bg-transparent{% else %}bg-white border-t{% endif %}">
       <div class="max-w-7xl mx-auto px-6 py-3 flex justify-center space-x-10 text-sm font-semibold uppercase tracking-widest {% if es_inicio %}text-white{% else %}text-gray-800{% endif %}">
-       
+      
         <!-- CATEGORÍAS -->
         <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
           <button class="hover:text-black {% if es_inicio %}text-white{% endif %}">CATEGORÍAS</button>
@@ -165,7 +165,7 @@
       <div>
         <h6 class="uppercase font-semibold mb-3">Explora</h6>
         <ul>
-          <li><a href="{% url 'inicio' %}" class="hover:text-indigo-500">Inicio</a></li>
+          <li><a href="#" class="hover:text-indigo-500">Inicio</a></li>
           <li><a href="{% url 'sobre' %}" class="hover:text-indigo-500">Sobre Nosotros</a></li>
           <li><a href="{% url 'contacto' %}" class="hover:text-indigo-500">Contacto</a></li>
         </ul>

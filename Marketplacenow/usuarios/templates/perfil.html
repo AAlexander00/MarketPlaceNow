@@ -12,7 +12,7 @@
     <ul class="space-y-1">
       <li><a href="{% url 'perfil' %}" class="hover:text-red-600">Mis Pedidos</a></li>
       <li><a href="{% url 'detalle' %}" class="hover:text-red-600">Detalles De Perfil</a></li>
-      <li><a href="{%url 'direccion'%}" class="hover:text-red-600">Direcciones</a></li>
+      <li><a href="{% url 'direccion' %}" class="hover:text-red-600">Direcciones</a></li>
     </ul>
 
     <!-- Botón cerrar sesión -->
@@ -28,12 +28,14 @@
   <section class="col-span-2 space-y-6">
     <div class="bg-white p-6 rounded shadow">
       <h2 class="text-xl font-bold text-gray-900">MI CUENTA</h2>
-      <h2 class="text-xl font-bold text-black">Hola, {{ nombre }} 👋</h2>
+      <h2 class="text-xl font-bold text-black">
+        Hola, {{ nombre }}{% if apellido %} {{ apellido }}{% endif %} 👋
+      </h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 mt-4 text-center text-sm text-gray-600">
-        
+        <!-- Puedes agregar tarjetas/resumen aquí -->
       </div>
       <div class="bg-yellow-100 text-yellow-800 text-sm p-2 mt-4 rounded">
-        
+        <!-- Mensaje adicional opcional -->
       </div>
     </div>
 
@@ -78,8 +80,6 @@
       {% endif %}
     </div>
   </section>
-
- 
 
 </div>
 {% endblock %}

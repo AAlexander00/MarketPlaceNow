@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body { font-family: Arial, sans-serif; color: #333; }
+            .producto { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+            .imagen { width: 120px; height: 120px; object-fit: cover; border-radius: 6px; }
+        </style>
+    </head>
+    <body>
+        <h2>¡Gracias por tu compra, {{ usuario.first_name }}!</h2>
+        <p>Este es el resumen de tu pedido <strong>#{{ orden.id }}</strong> realizado el {{ orden.fecha_creacion|date:"d/m/Y H:i" }}.</p>
+
+        <h3>Detalles:</h3>
+        {% for item in detalles %}
+            <div class="producto">
+                {% if item.producto.imagen %}
+                    <img src="https://{{ dominio }}{{ item.producto.imagen.url }}" class="imagen" alt="{{ item.producto.nombre }}">
+                {% endif %}
+                <p><strong>{{ item.producto.nombre }}</strong></p>
+                {% if item.talla %}<p>Talla: {{ item.talla.nombre }}</p>{% endif %}
+                {% if item.color %}<p>Color: {{ item.color.nombre }}</p>{% endif %}
+                <p>Cantidad: {{ item.cantidad }}</p>
+                <p>Precio unitario: ${{ item.precio_unitario }}</p>
+                <p><strong>Subtotal: ${{ item.subtotal }}</strong></p>
+            </div>
+        {% endfor %}
+
+        <h3>Total pagado: <span style="color: red;">${{ orden.total }}</span></h3>
+        <p>💌 Este correo es tu comprobante de compra.</p>
+    </body>
+</html>

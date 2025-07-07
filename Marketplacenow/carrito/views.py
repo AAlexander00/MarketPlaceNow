@@ -4,6 +4,11 @@ from django.http import JsonResponse
 from .models import CarritoItem
 from productos.models import Producto, Talla, Color
 from ordenes.models import Orden, DetalleOrden
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.utils.html import strip_tags
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def favoritos(request):   
@@ -158,15 +163,42 @@ def procesar_pago(request):
             estado='pagado'
         )
 
+        detalles = []
         for item in carrito_items:
-            DetalleOrden.objects.create(
+            detalle = DetalleOrden.objects.create(
                 orden=orden,
                 producto=item.producto,
                 cantidad=item.cantidad,
-                precio_unitario=item.producto.precio
+                precio_unitario=item.producto.precio,
+                talla=item.talla,
+                color=item.color,
             )
+            detalles.append(detalle)
 
+        # Eliminamos carrito
         carrito_items.delete()
+
+        # ✅ Enviar correo con la factura
+        dominio = get_current_site(request).domain
+        detalles_orden = orden.detalles.select_related('producto', 'talla', 'color')
+
+        html_content = render_to_string("factura_email.html", {
+            'orden': orden,
+            'detalles': detalles_orden,
+            'dominio': dominio,
+            'usuario': request.user
+        })
+        text_content = strip_tags(html_content)
+
+        email = EmailMultiAlternatives(
+            subject="🧾 Tu factura de MarketPlaceNow",
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[request.user.email],
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+
         return redirect('confirmacion_pago')
 
     return redirect('ver_carrito')
